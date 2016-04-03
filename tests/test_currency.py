@@ -54,7 +54,6 @@ def test_format_currency():
 
 
 def test_amount_to_words():
-    print amount_to_words(amount=Decimal('0.99'), currency='LTL')
     assert amount_to_words(amount=Decimal('0.99'), currency='LTL') == u'nulis litų ir 99 ct.'
     assert amount_to_words(amount=Decimal('1.99'), currency='LTL') == u'vienas litas ir 99 ct.'
     assert amount_to_words(amount=Decimal('2.99'), currency='LTL') == u'du litai ir 99 ct.'
