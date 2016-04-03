@@ -138,7 +138,7 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     to_currency_code = to_currency_code.upper()
 
     # Don't bother the server if we already know the rate
-    if date.year >= 2015:
+    if tax_currency(date.year) == 'EUR':
         if from_currency_code == 'EUR' and to_currency_code == 'LTL':
             return 1.0 * 3.4528
         elif from_currency_code == 'LTL' and to_currency_code == 'EUR':
