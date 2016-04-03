@@ -146,8 +146,8 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
         else:
             raise TypeError('You should be paying taxes in either LTL or EUR')
 
-    api_eur_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx"
-    soap_client = suds.client.Client(api_eur_endpoint + '?wsdl')
+    lb_currency_rates_api_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx"
+    soap_client = suds.client.Client(lb_currency_rates_api_endpoint + '?wsdl')
     soap_rate = soap_client.service.getFxRates(tp='LT', dt=date)
 
     for rate in soap_rate.FxRates.FxRate:
