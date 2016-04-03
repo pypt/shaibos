@@ -16,6 +16,9 @@ suds
 # Colorful logging
 colorlog
 
+# Date parsing
+python-dateutil
+
 # Currency formatting
 money
 babel
