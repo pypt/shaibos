@@ -4,5 +4,8 @@ python:
     - "3.5"
 install:
     - travis_retry pip install -r requirements.txt
+    - travis_retry pip install coveralls
 script:
-    - nosetests
+    - nosetests --with-coverage --cover-package=shaibos
+after_success:
+    - coveralls
