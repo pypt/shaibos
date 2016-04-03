@@ -140,9 +140,9 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     # Don't bother the server if we already know the rate
     if tax_currency(date.year) == 'EUR':
         if from_currency_code == 'EUR' and to_currency_code == 'LTL':
-            return 1.0 * 3.4528
+            return decimal.Decimal('3.4528')
         elif from_currency_code == 'LTL' and to_currency_code == 'EUR':
-            return 1.0 / 3.4528
+            return decimal.Decimal('0.2896')
         else:
             raise TypeError('You should be paying taxes in either LTL or EUR')
 
@@ -154,13 +154,13 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
         if len(rate.CcyAmt) != 2:
             raise Exception('Only two currencies per listing are expected')
         first_currency = rate.CcyAmt[0].Ccy
-        first_amount = float(rate.CcyAmt[0].Amt)
+        first_amount = rate.CcyAmt[0].Amt
         second_currency = rate.CcyAmt[1].Ccy
-        second_amount = float(rate.CcyAmt[1].Amt)
+        second_amount = rate.CcyAmt[1].Amt
 
         if first_currency == from_currency_code and second_currency == to_currency_code:
-            return second_amount / first_amount
+            return decimal.Decimal(second_amount) / decimal.Decimal(first_amount)
         elif first_currency == to_currency_code and second_currency == from_currency_code:
-            return first_amount / second_amount
+            return decimal.Decimal(first_amount) / decimal.Decimal(second_amount)
 
     raise RuntimeError("Currency rate between %s and %s was not found" % (from_currency_code, to_currency_code))
