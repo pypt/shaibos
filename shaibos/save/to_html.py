@@ -1,0 +1,38 @@
+# -*- coding: utf-8 -*-
+
+import os
+import tempfile
+
+from jinja2 import Environment
+
+from shaibos.util.currency import format_currency
+
+
+def render_html(invoice, template_path):
+    template = open(template_path, 'r').read()
+    template = template.decode('utf-8')
+
+    env = Environment(trim_blocks=True, lstrip_blocks=True)
+
+    env.globals.update(format_currency=format_currency)
+
+    return env.from_string(template).render(invoice)
+
+
+def save_html(invoice, template_path, output_path):
+    html = render_html(invoice=invoice, template_path=template_path)
+    with open(output_path, 'wb') as output_file:
+        output_file.write(html.encode('utf-8'))
+
+
+def save_html_tempdir(invoice, template_path):
+    temp_dir = tempfile.mkdtemp()
+
+    invoice_filename_prefix = 'invoice_%s%s' % (
+        invoice.seller.invoice_number_prefix.lower(),
+        invoice.padded_number
+    )
+    temp_html_file_path = os.path.join(temp_dir, invoice_filename_prefix + '.html')
+    save_html(invoice=invoice, template_path=template_path, output_path=temp_html_file_path)
+
+    return temp_html_file_path
