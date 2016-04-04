@@ -11,10 +11,14 @@ Jinja2
 pdfkit
 
 # LB exchange rates
-suds
+requests
+lxml
 
 # Colorful logging
 colorlog
+
+# Date parsing
+python-dateutil
 
 # Currency formatting
 money
