@@ -95,10 +95,28 @@ def format_currency(amount, currency, language):
     return formatted_amount
 
 
+def __integer_part(decimal_number):
+    return int(decimal_number)
+
+
+def __fractional_part(decimal_number):
+    if decimal_number < decimal.Decimal('0'):
+        raise Exception("Negative numbers are not supported")
+    fraction = decimal_number % decimal.Decimal('1')
+    str_fraction = str(fraction)
+    if str_fraction == "0":
+        return 0
+    else:
+        zero_prefix = "0."
+        if not str_fraction.startswith(zero_prefix):
+            raise Exception("Unknown number format: %s" % str_fraction)
+        return int(str_fraction[len(zero_prefix):])
+
+
 def amount_to_words(amount, currency):
     amount = round_to_decimal_places(amount, decimal_places(currency))
-    integer_part = int(amount)
-    float_part = int(amount % decimal.Decimal('1') * decimal.Decimal('100'))
+    integer_part = __integer_part(amount)
+    float_part = __fractional_part(amount)
 
     strings = num2words_strings(currency)
 
