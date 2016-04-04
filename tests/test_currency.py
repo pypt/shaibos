@@ -2,6 +2,9 @@
 
 from decimal import Decimal
 
+from dateutil import parser as dateparser
+from nose.tools import assert_raises
+
 from shaibos.util.currency import *
 
 
@@ -77,3 +80,36 @@ def test_amount_to_words():
     assert amount_to_words(amount=Decimal('11.99'), currency='USD') == u'vienuolika JAV dolerių ir 99 ¢'
     assert amount_to_words(amount=Decimal('21.99'), currency='USD') == u'dvidešimt vienas JAV doleris ir 99 ¢'
     assert amount_to_words(amount=Decimal('29.99'), currency='USD') == u'dvidešimt devyni JAV doleriai ir 99 ¢'
+
+
+# Reference rates: http://www.lb.lt/exchange/default.asp
+def test_lb_exchange_rate():
+    post_eurozone_date = dateparser.parse('2015-01-01')
+    pre_eurozone_date = dateparser.parse('2013-01-01')
+
+    # Known currency rates
+    assert lb_exchange_rate(from_currency_code='EUR', to_currency_code='LTL', date=post_eurozone_date) == Decimal(
+        '3.4528')
+    assert lb_exchange_rate(from_currency_code='LTL', to_currency_code='EUR', date=post_eurozone_date) == Decimal(
+        '0.2896')
+
+    # Post-Eurozone rate
+    assert lb_exchange_rate(from_currency_code='GBP', to_currency_code='EUR', date=post_eurozone_date) == Decimal(
+        '1.2839')
+    assert lb_exchange_rate(from_currency_code='EUR', to_currency_code='GBP', date=post_eurozone_date) == Decimal(
+        '0.7789')
+
+    # Pre-Eurozone rate
+    assert lb_exchange_rate(from_currency_code='GBP', to_currency_code='LTL', date=pre_eurozone_date) == Decimal(
+        '4.2015')
+    assert lb_exchange_rate(from_currency_code='LTL', to_currency_code='GBP', date=pre_eurozone_date) == Decimal(
+        '0.2380')
+
+    # Unsupported currency
+    assert_raises(Exception, lb_exchange_rate, 'USD', 'GBP', post_eurozone_date)
+
+    # Converting to LTL after Eurozone
+    assert_raises(Exception, lb_exchange_rate, 'GBP', 'LTL', post_eurozone_date)
+
+    # Converting to EUR before Eurozone
+    assert_raises(Exception, lb_exchange_rate, 'GBP', 'EUR', pre_eurozone_date)
