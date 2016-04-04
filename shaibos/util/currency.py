@@ -189,7 +189,7 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
         'dt': date.isoformat(),
     })
 
-    response_xml = etree.fromstring(str(response.content))
+    response_xml = etree.fromstring(response.content)
     namespaces = {'lb': response_xml.nsmap[None]}
     if not response_xml.tag.endswith("FxRates"):
         raise Exception("Invalid response, root element is not 'FxRates'")
