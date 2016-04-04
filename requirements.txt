@@ -12,6 +12,7 @@ pdfkit
 
 # LB exchange rates
 requests
+lxml
 
 # Colorful logging
 colorlog
