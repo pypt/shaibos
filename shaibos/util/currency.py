@@ -4,9 +4,13 @@ import babel
 import decimal
 
 import re
+
+import datetime
+import requests
+from lxml import etree
+
 from money import Money
 
-import suds.client
 from num2words import num2words
 
 __decimal_places = {
@@ -152,33 +156,70 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
 
     https://www.lb.lt/webservices/FxRates/
     """
+
+    if isinstance(date, datetime.datetime):
+        date = date.date()
+
     from_currency_code == from_currency_code.upper()
     to_currency_code = to_currency_code.upper()
+    exchange_tax_currency = tax_currency(date.year)
+
+    supported_currencies = {'EUR', 'LTL'}
+    if from_currency_code not in supported_currencies and to_currency_code not in supported_currencies:
+        raise Exception('Only conversions from / to ' + ','.join(supported_currencies) + ' are supported')
+
+    if exchange_tax_currency == 'EUR':
+        if 'EUR' not in {from_currency_code, to_currency_code}:
+            raise Exception('Only conversions to / from EUR in year %d are supported' % date.year)
+    if exchange_tax_currency == 'LTL':
+        if 'LTL' not in {from_currency_code, to_currency_code}:
+            raise Exception('Only conversions to / from LTL in year %d are supported' % date.year)
 
     # Don't bother the server if we already know the rate
-    if tax_currency(date.year) == 'EUR':
+    if exchange_tax_currency == 'EUR':
         if from_currency_code == 'EUR' and to_currency_code == 'LTL':
             return decimal.Decimal('3.4528')
         elif from_currency_code == 'LTL' and to_currency_code == 'EUR':
             return decimal.Decimal('0.2896')
-        else:
-            raise TypeError('You should be paying taxes in either LTL or EUR')
 
-    lb_currency_rates_api_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx"
-    soap_client = suds.client.Client(lb_currency_rates_api_endpoint + '?wsdl')
-    soap_rate = soap_client.service.getFxRates(tp='LT', dt=date)
+    # API supports SOAP but there's no decent SOAP client library for Python at the moment
+    lb_currency_rates_api_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx/getFxRates"
+    response = requests.get(lb_currency_rates_api_endpoint, params={
+        'tp': 'LT' if exchange_tax_currency == 'LTL' else 'EU',
+        'dt': date.isoformat(),
+    })
 
-    for rate in soap_rate.FxRates.FxRate:
-        if len(rate.CcyAmt) != 2:
+    response_xml = etree.fromstring(str(response.text))
+    namespaces = {'lb': response_xml.nsmap[None]}
+    if not response_xml.tag.endswith("FxRates"):
+        raise Exception("Invalid response, root element is not 'FxRates'")
+
+    rate = None
+    for currency_rates in response_xml.xpath('/lb:FxRates/lb:FxRate', namespaces=namespaces):
+        currencies = currency_rates.xpath('lb:CcyAmt', namespaces=namespaces)
+        if len(currencies) != 2:
             raise Exception('Only two currencies per listing are expected')
-        first_currency = rate.CcyAmt[0].Ccy
-        first_amount = rate.CcyAmt[0].Amt
-        second_currency = rate.CcyAmt[1].Ccy
-        second_amount = rate.CcyAmt[1].Amt
+
+        first_currency = currencies[0].xpath('lb:Ccy', namespaces=namespaces)[0].text
+        first_amount = decimal.Decimal(currencies[0].xpath('lb:Amt', namespaces=namespaces)[0].text)
+        second_currency = currencies[1].xpath('lb:Ccy', namespaces=namespaces)[0].text
+        second_amount = decimal.Decimal(currencies[1].xpath('lb:Amt', namespaces=namespaces)[0].text)
 
         if first_currency == from_currency_code and second_currency == to_currency_code:
-            return decimal.Decimal(second_amount) / decimal.Decimal(first_amount)
+            rate = second_amount / first_amount
         elif first_currency == to_currency_code and second_currency == from_currency_code:
-            return decimal.Decimal(first_amount) / decimal.Decimal(second_amount)
+            rate = first_amount / second_amount
 
-    raise RuntimeError("Currency rate between %s and %s was not found" % (from_currency_code, to_currency_code))
+        if rate:
+            # Round to the same fractional part
+            first_currency_decimal_places = len(str(__fractional_part(first_amount)))
+            second_currency_decimal_places = len(str(__fractional_part(second_amount)))
+            max_decimal_places = max(first_currency_decimal_places, second_currency_decimal_places)
+            rate = round_to_decimal_places(rate, max_decimal_places)
+
+            break
+
+    if rate is None:
+        raise Exception("Currency rate between %s and %s was not found" % (from_currency_code, to_currency_code))
+
+    return rate

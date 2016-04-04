@@ -11,7 +11,7 @@ Jinja2
 pdfkit
 
 # LB exchange rates
-suds
+requests
 
 # Colorful logging
 colorlog
