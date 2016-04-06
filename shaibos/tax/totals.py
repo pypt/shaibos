@@ -3,7 +3,7 @@ from collections import defaultdict
 from decimal import Decimal
 
 from shaibos.tax.rates import TaxRates
-from shaibos.util.currency import round_to_decimal_places, tax_currency, decimal_places
+from shaibos.util.currency import round_to_decimal_places, tax_currency, currency_decimal_places
 from shaibos.util.log import get_logger
 
 logger = get_logger()
@@ -132,7 +132,7 @@ def buyer_totals(invoices, year):
             paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
             invoice_totals = DynamicTotals(
                 income=paid_amount,
-                decimal_places=decimal_places(year_tax_currency),
+                decimal_places=currency_decimal_places(year_tax_currency),
                 tax_rates=TaxRates.from_defaults(
                     vsd_tax_percentage=invoice.seller.vsd_tax_rate,
                     gpm_tax_percentage=invoice.activity.gpm_tax_rate
@@ -166,7 +166,7 @@ def activity_totals(invoices, year):
             paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
             invoice_totals = DynamicTotals(
                 income=paid_amount,
-                decimal_places=decimal_places(year_tax_currency),
+                decimal_places=currency_decimal_places(year_tax_currency),
                 tax_rates=TaxRates.from_defaults(
                     vsd_tax_percentage=invoice.seller.vsd_tax_rate,
                     gpm_tax_percentage=invoice.activity.gpm_tax_rate

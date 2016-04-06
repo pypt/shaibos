@@ -64,7 +64,7 @@ def tax_currency(year):
         return 'EUR'
 
 
-def decimal_places(currency):
+def currency_decimal_places(currency):
     return __decimal_places[currency.upper()]
 
 
@@ -118,7 +118,7 @@ def __fractional_part(decimal_number):
 
 
 def amount_to_words(amount, currency):
-    amount = round_to_decimal_places(amount, decimal_places(currency))
+    amount = round_to_decimal_places(amount, currency_decimal_places(currency))
     integer_part = __integer_part(amount)
     float_part = __fractional_part(amount)
 
