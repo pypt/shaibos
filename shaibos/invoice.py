@@ -123,7 +123,7 @@ class Buyer(Iterable):
             return self.name
 
     def __str__(self):
-        return unicode(self).encode('utf-8')
+        return self.__unicode__().encode('utf-8')
 
     @classmethod
     def from_dictionary(cls, dictionary):
