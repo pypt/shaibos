@@ -137,6 +137,7 @@ def tax_filing(invoices, year):
     logger.info("* Įmokos kodas: 292")
     logger.info("* Sąskaita: http://www.sodra.lt/surenkamosios-saskaitos")
     logger.info("* Suma: %2.2f" % totals.vsd)
+    logger.info("")
 
     logger.info("PSD:")
     logger.info("* Įmokos kodas: 343")
