@@ -137,8 +137,6 @@ def invoice_totals(invoice, year):
         )
     )
 
-    logger.debug("%s: %s" % (invoice, totals_per_invoice))
-
     return totals_per_invoice
 
 
@@ -195,23 +193,12 @@ def tax_totals(invoices, year):
     return totals
 
 
-def gpm_percentages(invoices, year):
+def gpm_percentages(invoices):
     gpm = {}
 
     for invoice_number_prefix in invoices:
         for invoice in invoices[invoice_number_prefix]:
-
-            if not invoice.has_been_paid():
-                logger.warn("Invoice '%s' hasn't been marked as paid, skipping" % invoice)
-                continue
-
-            paid_year = invoice.payment_date()
-            if not paid_year.year == year:
-                logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
-                continue
-
             evrk_code = invoice.activity.evrk_code
-
             gpm[evrk_code] = invoice.activity.gpm_tax_rate
 
     return gpm

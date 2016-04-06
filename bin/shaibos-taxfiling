@@ -17,7 +17,7 @@ except ImportError:
 
 from shaibos.load.from_yaml import load_invoices_from_yaml
 from shaibos.tax.rates import default_income_type_code, evrk_code_to_activity_type_code
-from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals
+from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals, invoice_totals
 from shaibos.util.log import get_logger
 
 # ---
@@ -26,7 +26,15 @@ logger = get_logger()
 
 
 def tax_filing(invoices, year):
-    gpm = gpm_percentages(invoices=invoices, year=year)
+    for invoice_number_prefix in invoices:
+        for invoice in invoices[invoice_number_prefix]:
+            totals_per_invoice = invoice_totals(invoice=invoice, year=year)
+            if totals_per_invoice is None:
+                continue
+            logger.info("%s: %s" % (invoice, totals_per_invoice))
+    logger.info("")
+
+    gpm = gpm_percentages(invoices=invoices)
 
     totals_by_buyer = buyer_totals(invoices=invoices, year=year)
     logger.info("TOTALS by buyer:")
