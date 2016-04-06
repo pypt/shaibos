@@ -6,6 +6,8 @@ from shaibos.util.currency import round_to_decimal_places
 
 
 class StaticTotals(object):
+    """Basic counter of invoice totals."""
+
     income = decimal.Decimal('0.00')
     expenses = decimal.Decimal('0.00')
     tax_base = decimal.Decimal('0.00')
@@ -49,6 +51,8 @@ class StaticTotals(object):
 
 
 class DynamicTotals(StaticTotals):
+    """Invoice totals counter that calculates appropriate taxes."""
+
     def __init__(self, income, decimal_places, tax_rates):
         super(DynamicTotals, self).__init__()
         self.income = round_to_decimal_places(decimal.Decimal(income), decimal_places)
