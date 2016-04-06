@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import decimal
+from decimal import Decimal
 from collections import defaultdict
 
-from shaibos.util.currency import amount_to_words, decimal_places, round_to_decimal_places, lb_exchange_rate
+from shaibos.util.currency import amount_to_words, currency_decimal_places, round_to_decimal_places, lb_exchange_rate, \
+    tax_currency
 from shaibos.util.iterable import Iterable
 
 
@@ -61,9 +62,9 @@ class Item(Iterable):
         if self.currency is None:
             raise RuntimeError("'currency' wasn't set by the parent")
 
-        quantity = decimal.Decimal(self.quantity)
-        dec_places = decimal_places(self.currency)
-        price = round_to_decimal_places(decimal.Decimal(self.price), dec_places)
+        quantity = Decimal(self.quantity)
+        dec_places = currency_decimal_places(self.currency)
+        price = round_to_decimal_places(Decimal(self.price), dec_places)
         subtotal = round_to_decimal_places(quantity * price, dec_places)
         return subtotal
 
@@ -122,9 +123,6 @@ class Buyer(Iterable):
         else:
             return self.name
 
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
-
     @classmethod
     def from_dictionary(cls, dictionary):
         return cls(
@@ -143,7 +141,14 @@ class Buyer(Iterable):
 
 
 class Payment(Iterable):
-    def __init__(self, paid, date, amount=None, currency=None):
+    def __init__(self, paid, date=None, amount=None, currency=None):
+
+        if currency is not None:
+            if amount is None:
+                raise Exception('Please define amount paid for invoice when custom currency is set')
+            if date is None:
+                raise Exception('Please define date when the invoice was paid when custom currency is set')
+
         self.paid = paid
         self.date = date
         self.amount = amount
@@ -243,7 +248,7 @@ class Invoice(Iterable):
 
     @property
     def total(self):
-        total = decimal.Decimal(0)
+        total = Decimal(0)
         for item in self.items:
             total += item.subtotal
         return total
@@ -258,7 +263,7 @@ class Invoice(Iterable):
             self.padded_number
         )
 
-    def __str__(self):
+    def __unicode__(self):
         return self.filename_prefix()
 
     def has_been_paid(self):
@@ -274,7 +279,8 @@ class Invoice(Iterable):
                 # Assume the invoice date
                 return self.date
 
-    def paid_amount(self, tax_currency):
+    def paid_amount(self):
+        """Always returns amount in tax currency for the year."""
 
         amount = None
 
@@ -285,16 +291,26 @@ class Invoice(Iterable):
         if not bool(self.payment.currency):
             raise TypeError("When payment amount is set, currency must be set too.")
         if self.payment.amount:
-            if self.payment.currency == tax_currency:
+
+            target_currency = tax_currency(self.payment.date.year)
+
+            if self.payment.currency == target_currency:
                 # Nothing to convert
-                amount = self.payment.amount
+                amount = Decimal(self.payment.amount)
             else:
                 if not self.payment.date:
                     raise TypeError("When payment has been made in a custom currency, I need to know the payment date")
-                amount = lb_exchange_rate(self.payment.currency, tax_currency, self.payment.date)
+
+                exchange_rate = lb_exchange_rate(
+                    from_currency_code=self.payment.currency,
+                    to_currency_code=target_currency,
+                    date=self.payment.date
+                )
+                amount = Decimal(self.payment.amount) * exchange_rate
 
         if amount is not None:
-            amount = round_to_decimal_places(decimal.Decimal(amount), decimal_places(self.currency))
+            amount = round_to_decimal_places(Decimal(amount), currency_decimal_places(self.currency))
+
         return amount
 
 

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-import decimal
+from decimal import Decimal
 
-percent_multiplier = decimal.Decimal('0.01')
+percent_multiplier = Decimal('0.01')
 
 
 class TaxRates(object):
@@ -31,25 +31,25 @@ class TaxRates(object):
         return TaxRates(
             expenses_rate=default_expenses_rate(),
             sodra_tax_base=default_sodra_tax_base(),
-            vsd_rate=decimal.Decimal(vsd_tax_percentage) * percent_multiplier,
+            vsd_rate=Decimal(vsd_tax_percentage) * percent_multiplier,
             psd_rate=default_psd_rate(),
-            gpm_rate=decimal.Decimal(gpm_tax_percentage) * percent_multiplier,
+            gpm_rate=Decimal(gpm_tax_percentage) * percent_multiplier,
         )
 
 
 def default_expenses_rate():
     # 30%
-    return decimal.Decimal('30') * percent_multiplier
+    return Decimal('30') * percent_multiplier
 
 
 def default_sodra_tax_base():
     # 50%
-    return decimal.Decimal('50') * percent_multiplier
+    return Decimal('50') * percent_multiplier
 
 
 def default_psd_rate():
     # 9%
-    return decimal.Decimal('9') * percent_multiplier
+    return Decimal('9') * percent_multiplier
 
 
 def default_income_type_code():

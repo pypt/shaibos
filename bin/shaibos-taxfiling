@@ -3,8 +3,6 @@
 
 import argparse
 
-from collections import defaultdict
-
 try:
     # noinspection PyUnresolvedReferences
     import shaibos
@@ -17,10 +15,9 @@ except ImportError:
     # noinspection PyUnresolvedReferences
     import shaibos
 
-from shaibos.load.from_yaml import load_invoices_from_yaml
-from shaibos.tax.rates import TaxRates, default_income_type_code, evrk_code_to_activity_type_code
-from shaibos.tax.totals import StaticTotals, DynamicTotals
-from shaibos.util.currency import decimal_places, tax_currency
+from shaibos.load.from_yaml import load_invoices_from_yaml_file
+from shaibos.tax.rates import default_income_type_code, evrk_code_to_activity_type_code
+from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals, invoice_totals
 from shaibos.util.log import get_logger
 
 # ---
@@ -29,66 +26,29 @@ logger = get_logger()
 
 
 def tax_filing(invoices, year):
-    activity_totals = {}
-    activity_countries = defaultdict(set)
-    buyer_totals = defaultdict(StaticTotals)
-    gpm_percentages = {}
-
-    year_tax_currency = tax_currency(year)
-
     for invoice_number_prefix in invoices:
         for invoice in invoices[invoice_number_prefix]:
-
-            if not invoice.has_been_paid():
-                logger.warn("Invoice '%s' hasn't been marked as paid, skipping" % invoice)
+            totals_per_invoice = invoice_totals(invoice=invoice, year=year)
+            if totals_per_invoice is None:
                 continue
-
-            paid_year = invoice.payment_date()
-            if not paid_year.year == year:
-                logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
-                continue
-
-            paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
-            invoice_totals = DynamicTotals(
-                income=paid_amount,
-                decimal_places=decimal_places(year_tax_currency),
-                tax_rates=TaxRates.from_defaults(
-                    vsd_tax_percentage=invoice.seller.vsd_tax_rate,
-                    gpm_tax_percentage=invoice.activity.gpm_tax_rate
-                )
-            )
-
-            evrk_code = invoice.activity.evrk_code
-
-            if evrk_code in activity_totals:
-                activity_totals[evrk_code] += invoice_totals
-            else:
-                activity_totals[evrk_code] = invoice_totals
-
-            buyer_totals[invoice.buyer.__unicode__()] += invoice_totals
-
-            gpm_percentages[evrk_code] = invoice.activity.gpm_tax_rate
-            activity_countries[evrk_code].add(invoice.buyer.country_code)
-
-            logger.info("%s: %s" % (invoice, invoice_totals))
-
+            logger.info("%s: %s" % (invoice, totals_per_invoice))
     logger.info("")
 
+    gpm = gpm_percentages(invoices=invoices)
+
+    totals_by_buyer = buyer_totals(invoices=invoices, year=year)
     logger.info("TOTALS by buyer:")
-    for buyer_id, totals in sorted(buyer_totals.items()):
-        logger.info("* %s: %s" % (buyer_id, totals))
+    for buyer_id, buyer_total in totals_by_buyer.items():
+        logger.info("* %s: %s" % (buyer_id, buyer_total))
     logger.info("")
 
+    totals_by_activity = activity_totals(invoices=invoices, year=year)
     logger.info("TOTALS by activity:")
-    for evrk_code, totals in sorted(activity_totals.items()):
-        gpm_percentage = gpm_percentages[evrk_code]
-        logger.info("* %d (GPM %d%%): %s" % (evrk_code, gpm_percentage, totals))
+    for evrk_code, activity_total in totals_by_activity.items():
+        logger.info("* %d (GPM %d%%): %s" % (evrk_code, gpm[evrk_code], activity_total))
     logger.info("")
 
-    # Add totals by activity without recalculating them because that's what VMI does
-    totals = StaticTotals()
-    for t in activity_totals.values():
-        totals += t
+    totals = tax_totals(invoices=invoices, year=year)
     logger.info("TOTAL¹:")
     logger.info(" * %s" % totals)
     logger.info(
@@ -104,15 +64,15 @@ def tax_filing(invoices, year):
     logger.info("6 (Mokestinis laikotarpis): %d" % year)
     logger.info("")
 
-    for evrk_code, evrk_totals in sorted(activity_totals.items()):
+    for evrk_code, activity_total in totals_by_activity.items():
         logger.info("* V1 (Pajamų rūšies kodas): %d" % default_income_type_code())
         logger.info("  V2 (Veiklos rūšies kodas): %d" % evrk_code_to_activity_type_code(evrk_code))
-        logger.info("  V3 (Valstybių skaičius): %d" % len(activity_countries[evrk_code]))
+        logger.info("  V3 (Valstybių skaičius): %d" % activity_total.country_count)
         logger.info("  V4 (Valstybės kodas): ")
-        logger.info("  V5 (GPM tarifas): %d" % gpm_percentages[evrk_code])
-        logger.info("  V6 (Pajamų suma): %2.2f" % evrk_totals.income)
-        logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f" % evrk_totals.expenses)
-        logger.info("  V8 (Pajamų suma (+)/mokestinio laikotarpio nuostolių suma (-)): %2.2f" % evrk_totals.tax_base)
+        logger.info("  V5 (GPM tarifas): %d" % gpm[evrk_code])
+        logger.info("  V6 (Pajamų suma): %2.2f" % activity_total.income)
+        logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f" % activity_total.expenses)
+        logger.info("  V8 (Pajamų suma (+)/mokestinio laikotarpio nuostolių suma (-)): %2.2f" % activity_total.tax_base)
         logger.info("  V9 (Atskaitoma ankstesnių mokestinių nuostolių suma): 0")
         logger.info("  ")
 
@@ -151,6 +111,5 @@ if __name__ == "__main__":
     parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
     args = parser.parse_args()
 
-    yaml_invoices = load_invoices_from_yaml(args.input_yaml)
-
+    yaml_invoices = load_invoices_from_yaml_file(args.input_yaml)
     tax_filing(invoices=yaml_invoices, year=args.year)

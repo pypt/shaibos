@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import babel
-import decimal
+from decimal import Decimal, ROUND_HALF_UP
 
 import re
 
@@ -64,7 +64,7 @@ def tax_currency(year):
         return 'EUR'
 
 
-def decimal_places(currency):
+def currency_decimal_places(currency):
     return __decimal_places[currency.upper()]
 
 
@@ -104,9 +104,9 @@ def __integer_part(decimal_number):
 
 
 def __fractional_part(decimal_number):
-    if decimal_number < decimal.Decimal('0'):
+    if decimal_number < Decimal('0'):
         raise Exception("Negative numbers are not supported")
-    fraction = decimal_number % decimal.Decimal('1')
+    fraction = decimal_number % Decimal('1')
     str_fraction = str(fraction)
     if str_fraction == "0":
         return 0
@@ -118,7 +118,7 @@ def __fractional_part(decimal_number):
 
 
 def amount_to_words(amount, currency):
-    amount = round_to_decimal_places(amount, decimal_places(currency))
+    amount = round_to_decimal_places(amount, currency_decimal_places(currency))
     integer_part = __integer_part(amount)
     float_part = __fractional_part(amount)
 
@@ -145,7 +145,7 @@ def amount_to_words(amount, currency):
 
 
 def round_to_decimal_places(number, dec_places):
-    return decimal.Decimal(number.quantize(decimal.Decimal('.' + '0' * dec_places), rounding=decimal.ROUND_HALF_UP))
+    return Decimal(number.quantize(Decimal('.' + '0' * dec_places), rounding=ROUND_HALF_UP))
 
 
 def lb_exchange_rate(from_currency_code, to_currency_code, date):
@@ -178,9 +178,9 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     # Don't bother the server if we already know the rate
     if exchange_tax_currency == 'EUR':
         if from_currency_code == 'EUR' and to_currency_code == 'LTL':
-            return decimal.Decimal('3.4528')
+            return Decimal('3.4528')
         elif from_currency_code == 'LTL' and to_currency_code == 'EUR':
-            return decimal.Decimal('0.2896')
+            return Decimal('0.2896')
 
     # API supports SOAP but there's no decent SOAP client library for Python at the moment
     lb_currency_rates_api_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx/getFxRates"
@@ -201,9 +201,9 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
             raise Exception('Only two currencies per listing are expected')
 
         first_currency = currencies[0].xpath('lb:Ccy', namespaces=namespaces)[0].text
-        first_amount = decimal.Decimal(currencies[0].xpath('lb:Amt', namespaces=namespaces)[0].text)
+        first_amount = Decimal(currencies[0].xpath('lb:Amt', namespaces=namespaces)[0].text)
         second_currency = currencies[1].xpath('lb:Ccy', namespaces=namespaces)[0].text
-        second_amount = decimal.Decimal(currencies[1].xpath('lb:Amt', namespaces=namespaces)[0].text)
+        second_amount = Decimal(currencies[1].xpath('lb:Amt', namespaces=namespaces)[0].text)
 
         if first_currency == from_currency_code and second_currency == to_currency_code:
             rate = second_amount / first_amount

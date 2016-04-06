@@ -16,7 +16,7 @@ except ImportError:
     # noinspection PyUnresolvedReferences
     import shaibos
 
-from shaibos.load.from_yaml import load_invoices_from_yaml
+from shaibos.load.from_yaml import load_invoices_from_yaml_file
 from shaibos.save.to_html import save_html
 from shaibos.util.log import get_logger
 
@@ -29,7 +29,7 @@ def export_invoices_to_html(input_yaml, template, output_dir):
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
-    invoices = load_invoices_from_yaml(input_yaml)
+    invoices = load_invoices_from_yaml_file(input_yaml)
 
     for invoice_number_prefix in invoices:
         for invoice in invoices[invoice_number_prefix]:
