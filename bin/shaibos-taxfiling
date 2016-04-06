@@ -75,19 +75,19 @@ def tax_filing(invoices, year):
     logger.info("")
 
     logger.info("TOTALS by buyer:")
-    for buyer_id, totals in sorted(buyer_totals.iteritems()):
+    for buyer_id, totals in sorted(buyer_totals.items()):
         logger.info("* %s: %s" % (buyer_id, totals))
     logger.info("")
 
     logger.info("TOTALS by activity:")
-    for evrk_code, totals in sorted(activity_totals.iteritems()):
+    for evrk_code, totals in sorted(activity_totals.items()):
         gpm_percentage = gpm_percentages[evrk_code]
         logger.info("* %d (GPM %d%%): %s" % (evrk_code, gpm_percentage, totals))
     logger.info("")
 
     # Add totals by activity without recalculating them because that's what VMI does
     totals = StaticTotals()
-    for t in activity_totals.itervalues():
+    for t in activity_totals.values():
         totals += t
     logger.info("TOTAL¹:")
     logger.info(" * %s" % totals)
@@ -104,7 +104,7 @@ def tax_filing(invoices, year):
     logger.info("6 (Mokestinis laikotarpis): %d" % year)
     logger.info("")
 
-    for evrk_code, evrk_totals in sorted(activity_totals.iteritems()):
+    for evrk_code, evrk_totals in sorted(activity_totals.items()):
         logger.info("* V1 (Pajamų rūšies kodas): %d" % default_income_type_code())
         logger.info("  V2 (Veiklos rūšies kodas): %d" % evrk_code_to_activity_type_code(evrk_code))
         logger.info("  V3 (Valstybių skaičius): %d" % len(activity_countries[evrk_code]))
