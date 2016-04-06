@@ -65,7 +65,7 @@ def tax_filing(invoices, year):
             else:
                 activity_totals[evrk_code] = invoice_totals
 
-            buyer_totals[unicode(invoice.buyer)] += invoice_totals
+            buyer_totals[invoice.buyer.__unicode__()] += invoice_totals
 
             gpm_percentages[evrk_code] = invoice.activity.gpm_tax_rate
             activity_countries[evrk_code].add(invoice.buyer.country_code)
