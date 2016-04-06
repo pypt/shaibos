@@ -140,7 +140,14 @@ class Buyer(Iterable):
 
 
 class Payment(Iterable):
-    def __init__(self, paid, date, amount=None, currency=None):
+    def __init__(self, paid, date=None, amount=None, currency=None):
+
+        if currency is not None:
+            if amount is None:
+                raise Exception('Please define amount paid for invoice when custom currency is set')
+            if date is None:
+                raise Exception('Please define date when the invoice was paid when custom currency is set')
+
         self.paid = paid
         self.date = date
         self.amount = amount
