@@ -210,7 +210,7 @@ class Invoice(Iterable):
             seller=Seller.from_dictionary(dictionary['seller']),
             buyer=Buyer.from_dictionary(dictionary['buyer']),
             activity=Activity.from_dictionary(dictionary['activity']),
-            items=map(Item.from_dictionary, dictionary['items']),
+            items=list(map(Item.from_dictionary, dictionary['items'])),
             date=dictionary['date'],
             payment=Payment.from_dictionary(dictionary.get('payment', None)),
             number=dictionary.get('number', None),
