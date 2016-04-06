@@ -122,9 +122,6 @@ class Buyer(Iterable):
         else:
             return self.name
 
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
-
     @classmethod
     def from_dictionary(cls, dictionary):
         return cls(
@@ -258,7 +255,7 @@ class Invoice(Iterable):
             self.padded_number
         )
 
-    def __str__(self):
+    def __unicode__(self):
         return self.filename_prefix()
 
     def has_been_paid(self):

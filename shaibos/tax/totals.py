@@ -7,11 +7,12 @@ import collections
 from shaibos.tax.rates import TaxRates
 from shaibos.util.currency import round_to_decimal_places, tax_currency, currency_decimal_places
 from shaibos.util.log import get_logger
+from shaibos.util.unicode_mixin import UnicodeMixin
 
 logger = get_logger()
 
 
-class AddedTotals(object):
+class AddedTotals(UnicodeMixin):
     """Basic counter of invoice totals."""
 
     income = Decimal('0.00')
@@ -42,9 +43,6 @@ class AddedTotals(object):
             'tax': self.tax,
             'profit': self.profit,
         }
-
-    def __str__(self):
-        return self.__unicode__().encode('utf-8')
 
     def __iadd__(self, other):
         self.income += other.income
