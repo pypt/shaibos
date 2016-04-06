@@ -9,7 +9,7 @@ from shaibos.util.log import get_logger
 logger = get_logger()
 
 
-class StaticTotals(object):
+class AddedTotals(object):
     """Basic counter of invoice totals."""
 
     income = Decimal('0.00')
@@ -57,13 +57,13 @@ class StaticTotals(object):
         return self
 
 
-class DynamicTotals(StaticTotals):
+class CalculatedTotals(AddedTotals):
     """Invoice totals counter that calculates appropriate taxes."""
 
     countries = set()
 
     def __init__(self, income, decimal_places, tax_rates):
-        super(DynamicTotals, self).__init__()
+        super(CalculatedTotals, self).__init__()
         self.income = round_to_decimal_places(Decimal(income), decimal_places)
         self.decimal_places = decimal_places
         self.tax_rates = tax_rates
@@ -114,7 +114,7 @@ class DynamicTotals(StaticTotals):
 
 
 def buyer_totals(invoices, year):
-    totals_per_buyer = defaultdict(StaticTotals)
+    totals_per_buyer = defaultdict(AddedTotals)
     year_tax_currency = tax_currency(year)
 
     for invoice_number_prefix in invoices:
@@ -130,7 +130,7 @@ def buyer_totals(invoices, year):
                 continue
 
             paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
-            invoice_totals = DynamicTotals(
+            invoice_totals = CalculatedTotals(
                 income=paid_amount,
                 decimal_places=currency_decimal_places(year_tax_currency),
                 tax_rates=TaxRates.from_defaults(
@@ -164,7 +164,7 @@ def activity_totals(invoices, year):
                 continue
 
             paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
-            invoice_totals = DynamicTotals(
+            invoice_totals = CalculatedTotals(
                 income=paid_amount,
                 decimal_places=currency_decimal_places(year_tax_currency),
                 tax_rates=TaxRates.from_defaults(
@@ -190,7 +190,7 @@ def tax_totals(invoices, year):
     totals_by_activity = activity_totals(invoices=invoices, year=year)
 
     # Add totals by activity without recalculating them because that's what VMI does
-    totals = StaticTotals()
+    totals = AddedTotals()
     for t in totals_by_activity.values():
         totals += t
 
