@@ -5,11 +5,20 @@ import argparse
 
 import os
 
-# sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+try:
+    # noinspection PyUnresolvedReferences
+    import shaibos
+except ImportError:
+    import sys
 
-from shaibos.util.log import get_logger
+    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+
+    # noinspection PyUnresolvedReferences
+    import shaibos
+
 from shaibos.load.from_yaml import load_invoices_from_yaml
 from shaibos.save.to_html import save_html
+from shaibos.util.log import get_logger
 
 # ---
 

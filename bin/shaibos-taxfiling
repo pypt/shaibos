@@ -5,14 +5,22 @@ import argparse
 
 from collections import defaultdict
 
-from shaibos.tax.rates import TaxRates, default_income_type_code, evrk_code_to_activity_type_code
-from shaibos.util.currency import decimal_places, tax_currency
+try:
+    # noinspection PyUnresolvedReferences
+    import shaibos
+except ImportError:
+    import sys
 
-# sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
 
-from shaibos.tax.totals import StaticTotals, DynamicTotals
-from shaibos.util.log import get_logger
+    # noinspection PyUnresolvedReferences
+    import shaibos
+
 from shaibos.load.from_yaml import load_invoices_from_yaml
+from shaibos.tax.rates import TaxRates, default_income_type_code, evrk_code_to_activity_type_code
+from shaibos.tax.totals import StaticTotals, DynamicTotals
+from shaibos.util.currency import decimal_places, tax_currency
+from shaibos.util.log import get_logger
 
 # ---
 
