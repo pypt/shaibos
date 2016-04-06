@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import decimal
+from decimal import Decimal
 
 from shaibos.util.currency import round_to_decimal_places
 
@@ -8,15 +8,15 @@ from shaibos.util.currency import round_to_decimal_places
 class StaticTotals(object):
     """Basic counter of invoice totals."""
 
-    income = decimal.Decimal('0.00')
-    expenses = decimal.Decimal('0.00')
-    tax_base = decimal.Decimal('0.00')
-    sodra_tax_base = decimal.Decimal('0.00')
-    vsd = decimal.Decimal('0.00')
-    psd = decimal.Decimal('0.00')
-    gpm = decimal.Decimal('0.00')
-    tax = decimal.Decimal('0.00')
-    profit = decimal.Decimal('0.00')
+    income = Decimal('0.00')
+    expenses = Decimal('0.00')
+    tax_base = Decimal('0.00')
+    sodra_tax_base = Decimal('0.00')
+    vsd = Decimal('0.00')
+    psd = Decimal('0.00')
+    gpm = Decimal('0.00')
+    tax = Decimal('0.00')
+    profit = Decimal('0.00')
 
     def __init__(self):
         pass
@@ -58,7 +58,7 @@ class DynamicTotals(StaticTotals):
 
     def __init__(self, income, decimal_places, tax_rates):
         super(DynamicTotals, self).__init__()
-        self.income = round_to_decimal_places(decimal.Decimal(income), decimal_places)
+        self.income = round_to_decimal_places(Decimal(income), decimal_places)
         self.decimal_places = decimal_places
         self.tax_rates = tax_rates
 
@@ -84,17 +84,15 @@ class DynamicTotals(StaticTotals):
 
     @property
     def vsd(self):
-        return round_to_decimal_places(decimal.Decimal(self.sodra_tax_base * self.tax_rates.vsd_rate),
-                                       self.decimal_places)
+        return round_to_decimal_places(Decimal(self.sodra_tax_base * self.tax_rates.vsd_rate), self.decimal_places)
 
     @property
     def psd(self):
-        return round_to_decimal_places(decimal.Decimal(self.sodra_tax_base * self.tax_rates.psd_rate),
-                                       self.decimal_places)
+        return round_to_decimal_places(Decimal(self.sodra_tax_base * self.tax_rates.psd_rate), self.decimal_places)
 
     @property
     def gpm(self):
-        return round_to_decimal_places(decimal.Decimal(self.tax_base * self.tax_rates.gpm_rate), self.decimal_places)
+        return round_to_decimal_places(Decimal(self.tax_base * self.tax_rates.gpm_rate), self.decimal_places)
 
     @property
     def tax(self):

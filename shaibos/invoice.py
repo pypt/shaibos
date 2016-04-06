@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import decimal
+from decimal import Decimal
 from collections import defaultdict
 
 from shaibos.util.currency import amount_to_words, decimal_places, round_to_decimal_places, lb_exchange_rate
@@ -61,9 +61,9 @@ class Item(Iterable):
         if self.currency is None:
             raise RuntimeError("'currency' wasn't set by the parent")
 
-        quantity = decimal.Decimal(self.quantity)
+        quantity = Decimal(self.quantity)
         dec_places = decimal_places(self.currency)
-        price = round_to_decimal_places(decimal.Decimal(self.price), dec_places)
+        price = round_to_decimal_places(Decimal(self.price), dec_places)
         subtotal = round_to_decimal_places(quantity * price, dec_places)
         return subtotal
 
@@ -243,7 +243,7 @@ class Invoice(Iterable):
 
     @property
     def total(self):
-        total = decimal.Decimal(0)
+        total = Decimal(0)
         for item in self.items:
             total += item.subtotal
         return total
@@ -294,7 +294,7 @@ class Invoice(Iterable):
                 amount = lb_exchange_rate(self.payment.currency, tax_currency, self.payment.date)
 
         if amount is not None:
-            amount = round_to_decimal_places(decimal.Decimal(amount), decimal_places(self.currency))
+            amount = round_to_decimal_places(Decimal(amount), decimal_places(self.currency))
         return amount
 
 
