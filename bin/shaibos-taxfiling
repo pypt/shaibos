@@ -77,7 +77,7 @@ def tax_filing(invoices, year):
         logger.info("  V6 (Pajamų suma): %2.2f %s" % (activity_total.income, currency))
         logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f %s" % (activity_total.expenses, currency))
         logger.info("  V8 (Pajamų suma (+)/mokestinio laikotarpio nuostolių suma (-)): %2.2f %s" % (
-        activity_total.tax_base, currency))
+            activity_total.tax_base, currency))
         logger.info("  V9 (Atskaitoma ankstesnių mokestinių nuostolių suma): 0")
         logger.info("  ")
 
