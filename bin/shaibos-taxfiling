@@ -15,7 +15,7 @@ except ImportError:
     # noinspection PyUnresolvedReferences
     import shaibos
 
-from shaibos.load.from_yaml import load_invoices_from_yaml
+from shaibos.load.from_yaml import load_invoices_from_yaml_file
 from shaibos.tax.rates import default_income_type_code, evrk_code_to_activity_type_code
 from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals, invoice_totals
 from shaibos.util.log import get_logger
@@ -111,5 +111,5 @@ if __name__ == "__main__":
     parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
     args = parser.parse_args()
 
-    yaml_invoices = load_invoices_from_yaml(args.input_yaml)
+    yaml_invoices = load_invoices_from_yaml_file(args.input_yaml)
     tax_filing(invoices=yaml_invoices, year=args.year)
