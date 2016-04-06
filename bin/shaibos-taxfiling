@@ -3,6 +3,8 @@
 
 import argparse
 
+from shaibos.util.currency import tax_currency
+
 try:
     # noinspection PyUnresolvedReferences
     import shaibos
@@ -33,6 +35,8 @@ def tax_filing(invoices, year):
                 continue
             logger.info("%s: %s" % (invoice, totals_per_invoice))
     logger.info("")
+
+    currency = tax_currency(year)
 
     gpm = gpm_percentages(invoices=invoices)
 
@@ -70,9 +74,10 @@ def tax_filing(invoices, year):
         logger.info("  V3 (Valstybių skaičius): %d" % activity_total.country_count)
         logger.info("  V4 (Valstybės kodas): ")
         logger.info("  V5 (GPM tarifas): %d" % gpm[evrk_code])
-        logger.info("  V6 (Pajamų suma): %2.2f" % activity_total.income)
-        logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f" % activity_total.expenses)
-        logger.info("  V8 (Pajamų suma (+)/mokestinio laikotarpio nuostolių suma (-)): %2.2f" % activity_total.tax_base)
+        logger.info("  V6 (Pajamų suma): %2.2f %s" % (activity_total.income, currency))
+        logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f %s" % (activity_total.expenses, currency))
+        logger.info("  V8 (Pajamų suma (+)/mokestinio laikotarpio nuostolių suma (-)): %2.2f %s" % (
+        activity_total.tax_base, currency))
         logger.info("  V9 (Atskaitoma ankstesnių mokestinių nuostolių suma): 0")
         logger.info("  ")
 
@@ -96,13 +101,13 @@ def tax_filing(invoices, year):
     logger.info("VSD:")
     logger.info("* Įmokos kodas: 292")
     logger.info("* Sąskaita: http://www.sodra.lt/surenkamosios-saskaitos")
-    logger.info("* Suma: %2.2f" % totals.vsd)
+    logger.info("* Suma: %2.2f %s" % (totals.vsd, currency))
     logger.info("")
 
     logger.info("PSD:")
     logger.info("* Įmokos kodas: 343")
     logger.info("* Sąskaita: http://www.sodra.lt/surenkamosios-saskaitos")
-    logger.info("* Suma: %2.2f minus per mokestinius metus kas mėnesį sumokėtos įmokos" % totals.psd)
+    logger.info("* Suma: %2.2f %s minus per mokestinius metus kas mėnesį sumokėtos įmokos" % (totals.psd, currency))
 
 
 if __name__ == "__main__":
