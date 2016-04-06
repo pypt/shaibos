@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+import codecs
 import os
 import tempfile
 
@@ -9,8 +9,7 @@ from shaibos.util.currency import format_currency
 
 
 def render_html(invoice, template_path):
-    template = open(template_path, 'r').read()
-    template = template.decode('utf-8')
+    template = codecs.open(template_path, 'r', 'utf-8').read()
 
     env = Environment(trim_blocks=True, lstrip_blocks=True)
 
@@ -21,8 +20,8 @@ def render_html(invoice, template_path):
 
 def save_html(invoice, template_path, output_path):
     html = render_html(invoice=invoice, template_path=template_path)
-    with open(output_path, 'wb') as output_file:
-        output_file.write(html.encode('utf-8'))
+    with codecs.open(output_path, 'wb', 'utf-8') as output_file:
+        output_file.write(html)
 
 
 def save_html_tempdir(invoice, template_path):
