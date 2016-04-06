@@ -21,7 +21,7 @@ class StaticTotals(object):
     def __init__(self):
         pass
 
-    def __str__(self):
+    def __unicode__(self):
         descr_str = ""
         descr_str += "%(income)s; expenses: %(expenses)s; tax base: %(tax_base)s; SoDra tax base: %(sodra_tax_base)s; "
         descr_str += "VSD: %(vsd)s; PSD: %(psd)s; GPM: %(gpm)s; tax: %(tax)s; profit: %(profit)s"
@@ -36,6 +36,9 @@ class StaticTotals(object):
             'tax': self.tax,
             'profit': self.profit,
         }
+
+    def __str__(self):
+        return self.__unicode__().encode('utf-8')
 
     def __iadd__(self, other):
         self.income += other.income
