@@ -115,35 +115,44 @@ class CalculatedTotals(AddedTotals):
         return len(self.countries)
 
 
+def invoice_totals(invoice, year):
+    year_tax_currency = tax_currency(year)
+
+    if not invoice.has_been_paid():
+        logger.warn("Invoice '%s' hasn't been marked as paid, skipping" % invoice)
+        return None
+
+    paid_year = invoice.payment_date()
+    if not paid_year.year == year:
+        logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
+        return None
+
+    paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
+    totals_per_invoice = CalculatedTotals(
+        income=paid_amount,
+        decimal_places=currency_decimal_places(year_tax_currency),
+        tax_rates=TaxRates.from_defaults(
+            vsd_tax_percentage=invoice.seller.vsd_tax_rate,
+            gpm_tax_percentage=invoice.activity.gpm_tax_rate
+        )
+    )
+
+    logger.debug("%s: %s" % (invoice, totals_per_invoice))
+
+    return totals_per_invoice
+
+
 def buyer_totals(invoices, year):
     totals_per_buyer = defaultdict(AddedTotals)
-    year_tax_currency = tax_currency(year)
 
     for invoice_number_prefix in invoices:
         for invoice in invoices[invoice_number_prefix]:
 
-            if not invoice.has_been_paid():
-                logger.warn("Invoice '%s' hasn't been marked as paid, skipping" % invoice)
+            totals_per_invoice = invoice_totals(invoice=invoice, year=year)
+            if totals_per_invoice is None:
                 continue
 
-            paid_year = invoice.payment_date()
-            if not paid_year.year == year:
-                logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
-                continue
-
-            paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
-            invoice_totals = CalculatedTotals(
-                income=paid_amount,
-                decimal_places=currency_decimal_places(year_tax_currency),
-                tax_rates=TaxRates.from_defaults(
-                    vsd_tax_percentage=invoice.seller.vsd_tax_rate,
-                    gpm_tax_percentage=invoice.activity.gpm_tax_rate
-                )
-            )
-
-            totals_per_buyer[invoice.buyer.__unicode__()] += invoice_totals
-
-            logger.debug("%s: %s" % (invoice, invoice_totals))
+            totals_per_buyer[invoice.buyer.__unicode__()] += totals_per_invoice
 
     # Sort by buyer name
     totals_per_buyer = collections.OrderedDict(sorted(totals_per_buyer.items()))
@@ -154,39 +163,20 @@ def buyer_totals(invoices, year):
 def activity_totals(invoices, year):
     totals_by_activity = {}
 
-    year_tax_currency = tax_currency(year)
-
     for invoice_number_prefix in invoices:
         for invoice in invoices[invoice_number_prefix]:
 
-            if not invoice.has_been_paid():
-                logger.warn("Invoice '%s' hasn't been marked as paid, skipping" % invoice)
+            totals_per_invoice = invoice_totals(invoice=invoice, year=year)
+            if totals_per_invoice is None:
                 continue
 
-            paid_year = invoice.payment_date()
-            if not paid_year.year == year:
-                logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
-                continue
-
-            paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
-            invoice_totals = CalculatedTotals(
-                income=paid_amount,
-                decimal_places=currency_decimal_places(year_tax_currency),
-                tax_rates=TaxRates.from_defaults(
-                    vsd_tax_percentage=invoice.seller.vsd_tax_rate,
-                    gpm_tax_percentage=invoice.activity.gpm_tax_rate
-                )
-            )
-            invoice_totals.countries.add(invoice.buyer.country_code)
-
+            totals_per_invoice.countries.add(invoice.buyer.country_code)
             evrk_code = invoice.activity.evrk_code
 
             if evrk_code in totals_by_activity:
-                totals_by_activity[evrk_code] += invoice_totals
+                totals_by_activity[evrk_code] += totals_per_invoice
             else:
-                totals_by_activity[evrk_code] = invoice_totals
-
-            logger.debug("%s: %s" % (invoice, invoice_totals))
+                totals_by_activity[evrk_code] = totals_per_invoice
 
     # Sort by EVRK code
     totals_by_activity = collections.OrderedDict(sorted(totals_by_activity.items()))
