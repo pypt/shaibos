@@ -125,7 +125,7 @@ def invoice_totals(invoice, year):
         logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
         return None
 
-    paid_amount = invoice.paid_amount(tax_currency=year_tax_currency)
+    paid_amount = invoice.paid_amount()
     totals_per_invoice = CalculatedTotals(
         income=paid_amount,
         decimal_places=currency_decimal_places(year_tax_currency),
