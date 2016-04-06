@@ -2,6 +2,8 @@
 from collections import defaultdict
 from decimal import Decimal
 
+import collections
+
 from shaibos.tax.rates import TaxRates
 from shaibos.util.currency import round_to_decimal_places, tax_currency, currency_decimal_places
 from shaibos.util.log import get_logger
@@ -143,6 +145,9 @@ def buyer_totals(invoices, year):
 
             logger.debug("%s: %s" % (invoice, invoice_totals))
 
+    # Sort by buyer name
+    totals_per_buyer = collections.OrderedDict(sorted(totals_per_buyer.items()))
+
     return totals_per_buyer
 
 
@@ -182,6 +187,9 @@ def activity_totals(invoices, year):
                 totals_by_activity[evrk_code] = invoice_totals
 
             logger.debug("%s: %s" % (invoice, invoice_totals))
+
+    # Sort by EVRK code
+    totals_by_activity = collections.OrderedDict(sorted(totals_by_activity.items()))
 
     return totals_by_activity
 

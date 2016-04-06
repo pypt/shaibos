@@ -30,13 +30,13 @@ def tax_filing(invoices, year):
 
     totals_by_buyer = buyer_totals(invoices=invoices, year=year)
     logger.info("TOTALS by buyer:")
-    for buyer_id, buyer_total in sorted(totals_by_buyer.items()):
+    for buyer_id, buyer_total in totals_by_buyer.items():
         logger.info("* %s: %s" % (buyer_id, buyer_total))
     logger.info("")
 
     totals_by_activity = activity_totals(invoices=invoices, year=year)
     logger.info("TOTALS by activity:")
-    for evrk_code, activity_total in sorted(totals_by_activity.items()):
+    for evrk_code, activity_total in totals_by_activity.items():
         logger.info("* %d (GPM %d%%): %s" % (evrk_code, gpm[evrk_code], activity_total))
     logger.info("")
 
@@ -56,7 +56,7 @@ def tax_filing(invoices, year):
     logger.info("6 (Mokestinis laikotarpis): %d" % year)
     logger.info("")
 
-    for evrk_code, activity_total in sorted(totals_by_activity.items()):
+    for evrk_code, activity_total in totals_by_activity.items():
         logger.info("* V1 (Pajamų rūšies kodas): %d" % default_income_type_code())
         logger.info("  V2 (Veiklos rūšies kodas): %d" % evrk_code_to_activity_type_code(evrk_code))
         logger.info("  V3 (Valstybių skaičius): %d" % activity_total.country_count)
