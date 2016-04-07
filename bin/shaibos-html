@@ -16,6 +16,7 @@ except ImportError:
     # noinspection PyUnresolvedReferences
     import shaibos
 
+from shaibos.util.template import default_template_path
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
 from shaibos.save.to_html import save_html
 from shaibos.util.log import get_logger
@@ -42,8 +43,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Export invoices to HTML.')
     parser.add_argument('-i', '--input_yaml', type=str, required=False, default='shaibos.yaml',
                         help='YAML file with invoices (leave empty to use shaibos.yaml)')
-    parser.add_argument('-t', '--template', type=str, required=True, help='Jinja2 template for rendering the invoice')
+    parser.add_argument('-t', '--template', type=str, required=False, default=default_template_path(),
+                        help='Jinja2 template for rendering the invoice (leave empty to use basic template)')
     parser.add_argument('-o', '--output_dir', type=str, required=True, help='Output directory for HTML files')
     args = parser.parse_args()
+
+    logger.debug("Using input YAML file: %s" % args.input_yaml)
+    logger.debug("Using Jinja2 template: %s" % args.template)
 
     export_invoices_to_html(input_yaml=args.input_yaml, template=args.template, output_dir=args.output_dir)
