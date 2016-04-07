@@ -49,7 +49,8 @@ def year_totals(invoices, year):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Print tax filing information for invoices.')
-    parser.add_argument('-i', '--input_yaml', type=str, required=True, help='YAML file with invoices')
+    parser.add_argument('-i', '--input_yaml', type=str, required=False, default='shaibos.yaml',
+                        help='YAML file with invoices (leave empty to use shaibos.yaml)')
     parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
     args = parser.parse_args()
 
