@@ -42,6 +42,7 @@ def year_totals(invoices, year):
     totals = tax_totals(invoices=invoices, year=year)
     logger.info("TOTAL¹:")
     logger.info(" * %s" % totals)
+    logger.info("")
     logger.info("¹ Might be different from the tax totals because expenses are counted for each activity separately.")
     logger.info("")
 
