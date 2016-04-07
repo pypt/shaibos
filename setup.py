@@ -27,4 +27,12 @@ setup(
     test_suite='tests',
     packages=find_packages(exclude=['tests']),
     scripts=glob.glob('bin/shaibos-*'),
+    package_dir={
+        'shaibos': 'shaibos',
+    },
+    package_data={
+        'shaibos': ['logging.conf', 'templates/*.jinja2'],
+    },
+    include_package_data=True,
+    zip_safe=False,
 )
