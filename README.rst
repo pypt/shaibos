@@ -114,6 +114,9 @@ Pavyzdys:
 ``shaibos-html`` – HTML sąskaitų generavimas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. figure:: docs/images/example-html.jpg
+   :alt: 
+
 Naudojimas:
 
 ::
@@ -132,6 +135,9 @@ Sugeneruoja visas sąskaitas iš YAML failo HTML formatu.
 
 ``shaibos-pdf`` – PDF sąskaitų generavimas
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. figure:: docs/images/example-pdf.jpg
+   :alt: 
 
 Naudojimas:
 
@@ -152,6 +158,9 @@ Sugeneruoja visas sąskaitas iš YAML failo PDF formatu.
 ``shaibos-totals`` – per metus išrašytų sąskaitų suvestinė
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. figure:: docs/images/example-totals.jpg
+   :alt: 
+
 Naudojimas:
 
 ::
@@ -169,6 +178,9 @@ pagal klientą ir veiklos rūšį, taip pat bendrą uždirbtų pinigų sumą.
 
 ``shaibos-taxfiling`` – VMI deklaruojamų pajamų ir mokesčių skaičiuoklė
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. figure:: docs/images/example-taxfiling.jpg
+   :alt: 
 
 Naudojimas:
 
