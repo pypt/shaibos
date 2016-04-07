@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        VVP
+        00001
+    </title>
+    <style type="text/css" media="all">
+
+        @page {
+            size: A4 portrait;
+            counter-increment: page;
+            margin: 0;
+
+            @bottom-right {
+                padding-right: 1em;
+                content: counter(page) " / " counter(pages);
+            }
+        }
+
+        html, body {
+            /* A4 */
+            width: 210mm;
+            height: 297mm;
+
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            padding: 2em;
+        }
+
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid;
+            padding: 0.2em 0.4em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: lightgray;
+
+            /* Print background color */
+            -webkit-print-color-adjust: exact;
+        }
+
+        tr#total-row th {
+            background-color: inherit;
+            text-align: right;
+        }
+
+        table#invoice,
+        table#credentials,
+        table#items {
+            width: 100%;
+        }
+
+        table#items {
+            margin-bottom: 1em;
+        }
+
+        table.credentials-table {
+            border: none;
+        }
+
+        table.credentials-table tr td {
+            border: none;
+            border-bottom: 1px solid;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        table.credentials-table tr:last-child td {
+            border: none;
+        }
+
+        caption,
+        th#subtotal-column-header,
+        tr#total-row {
+            text-transform: uppercase;
+        }
+
+        caption,
+        div.bottom-credentials {
+            padding: 0.6em 0 0.2em 0;
+        }
+
+        caption,
+        tr#total-row {
+            font-weight: bold;
+        }
+
+        caption#invoice-caption {
+            font-size: x-large;
+        }
+
+        caption#credentials-caption,
+        caption#items-caption,
+        tr#total-row {
+            font-size: large;
+        }
+
+        td.credentials-column {
+            width: 50%;
+        }
+
+        td.credentials-column table.credentials-table {
+            width: 100%;
+        }
+
+        ul.i18n_block {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        ul.i18n_block li {
+            /* Line break */
+            display: block;
+        }
+
+        div.flat-list ul li {
+            /* No line break */
+            display: inline-block;
+        }
+
+        div.flat-list ul li:not(:first-child) {
+            text-transform: lowercase;
+        }
+
+        div.flat-list ul li:nth-child(2):before {
+            content: "(";
+        }
+
+        div.flat-list ul li:nth-child(n+2):after {
+            content: ",\0000a0";
+        }
+
+        div.flat-list ul li:not(:first-child):last-child:after {
+            content: ")";
+        }
+
+        div.flat-list {
+            display: block;
+            float: left;
+
+            /* Some space to signature line */
+            margin-right: 0.5em;
+        }
+
+        div.signature-line {
+            display: block;
+            overflow: hidden;
+
+            border-bottom: 1px solid;
+        }
+
+        td.bank-credentials ul.i18n_block li:not(:last-child):after {
+            /* One extra line break between languages */
+            content: "\A\A";
+            white-space: pre;
+        }
+
+        td.amount {
+            /* Never wrap amounts */
+            white-space: nowrap;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+
+
+
+<table id="invoice">
+    <caption id="invoice-caption">
+<ul class="i18n_block">
+            <li>Sąskaita faktūra</li>
+    </ul>    </caption>
+    <tr>
+        <td>
+<ul class="i18n_block">
+            <li>                    Serija:
+                    <strong>VVP</strong>,
+                    Nr. <strong>00001</strong>
+</li>
+    </ul>        </td>
+        <td>
+<ul class="i18n_block">
+            <li>Išrašyta: <strong>2015-03-31</strong></li>
+    </ul>        </td>
+    </tr>
+</table>
+
+<table id="credentials">
+    <caption id="credentials-caption">
+<ul class="i18n_block">
+            <li>Rekvizitai</li>
+    </ul>    </caption>
+    <tr>
+        <th>
+<ul class="i18n_block">
+            <li>Pardavėjas:</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li>Pirkėjas:</li>
+    </ul>        </th>
+    </tr>
+    <tr>
+        <td class="credentials-column">
+            <table class="credentials-table">
+                <tr>
+                    <td>
+                        <strong>Bekas Enderis</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>Individualios veiklos pažymos registracijos nr:
+                            <strong>123456</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>                                Individualios veiklos išdavimo data:
+                                <strong>2011-01-03</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>Asmens kodas:
+                            <strong>38912010123</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>Adresas:
+                            <strong>        Pitono g. 1-2, LT-05229 Vilnius
+</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                    <tr>
+                        <td>
+<ul class="i18n_block">
+            <li>Tel. nr.:
+                                <strong>        +37068712345
+</strong>
+</li>
+    </ul>                        </td>
+                    </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>El. pašto adresas:
+                            <strong>bekas@ender.is</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                <tr>
+                    <td class="bank-credentials">
+
+<ul class="i18n_block">
+            <li>
+                                Atsiskaitomoji sąskaita: <strong>LT627300010012345678</strong><br/>
+                                Bankas: <strong>        „Swedbank“, AB
+</strong>
+
+
+</li>
+    </ul>
+                    </td>
+                </tr>
+            </table>
+        </td>
+        <td class="credentials-column">
+            <table class="credentials-table">
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>                            <strong>        UAB „Nebesugalvoju gero bajerio“
+</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li>Adresas:
+                            <strong>        Aštuonių vakaro skg. 3-42, LT-00000 Vilnius
+</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                    <tr>
+                        <td>
+<ul class="i18n_block">
+            <li>Įmonės kodas:
+                                <strong>1234567890</strong>
+</li>
+    </ul>                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+<ul class="i18n_block">
+            <li>PVM mokėtojo kodas:
+                                <strong>LT123456789</strong>
+</li>
+    </ul>                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+<ul class="i18n_block">
+            <li>Tel. nr.:
+                                <strong>        +370 5 1234567
+</strong>
+</li>
+    </ul>                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+<ul class="i18n_block">
+            <li>Faksas:
+                                <strong>        +370 5 1234567
+</strong>
+</li>
+    </ul>                        </td>
+                    </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table id="items">
+    <caption id="items-caption">
+<ul class="i18n_block">
+            <li>Prekės</li>
+    </ul>    </caption>
+    <tr>
+        <th>
+<ul class="i18n_block">
+            <li>Eil. nr.</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li>Prekės kodas</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li>Prekės pavadinimas</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li>Matas</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li>Kiekis</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li>Vieneto kaina</li>
+    </ul>        </th>
+        <th id="subtotal-column-header">
+<ul class="i18n_block">
+            <li>Suma</li>
+    </ul>        </th>
+    </tr>
+        <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>
+                    Svetainės programavimo darbai.
+            </td>
+            <td>
+<ul class="i18n_block">
+            <li>val.</li>
+    </ul>            </td>
+            <td>6</td>
+            <td class="amount">
+        <ul class="i18n_block">
+            <li>                        30,00 €
+</li>
+    </ul>
+            </td>
+            <td class="amount">
+        <ul class="i18n_block">
+            <li>                        180,00 €
+</li>
+    </ul>
+            </td>
+        </tr>
+
+    <tr id="total-row">
+        <th colspan="6">
+<ul class="i18n_block">
+            <li>Viso:</li>
+    </ul>        </th>
+        <td class="amount">
+        <ul class="i18n_block">
+            <li>                    180,00 €
+</li>
+    </ul>
+        </td>
+    </tr>
+</table>
+
+<div id="amount-in-words" class="bottom-credentials">
+    <div class="flat-list">
+<ul class="i18n_block">
+            <li>Suma žodžiais</li>
+    </ul>:
+    </div>
+    <div class="signature-line">
+        <strong>vienas šimtas aštuoniasdešimt eurų ir 0 ct.</strong>
+        &nbsp;    </div>
+</div>
+
+<div id="issued-by" class="bottom-credentials">
+    <div class="flat-list">
+<ul class="i18n_block">
+            <li>Sąskaitą išrašė</li>
+    </ul>:
+    </div>
+    <div class="signature-line">
+        Bekas Enderis
+        &nbsp;    </div>
+</div>
+
+<div id="issued-to" class="bottom-credentials">
+    <div class="flat-list">
+<ul class="i18n_block">
+            <li>Sąskaitą priėmė</li>
+    </ul>:
+    </div>
+    <div class="signature-line">
+        &nbsp;    </div>
+</div>
+
+</body>
+
+</html>

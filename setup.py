@@ -36,7 +36,13 @@ setup(
         'shaibos': 'shaibos',
     },
     package_data={
-        'shaibos': ['logging.conf', 'templates/*.jinja2'],
+        'shaibos': [
+            'logging.conf',
+            'templates/*.jinja2',
+            'samples/1-backenderis/shaibos.yaml',
+            'samples/2-frontenderis/shaibos.yaml',
+            'samples/3-cto/shaibos.yaml',
+        ],
     },
     include_package_data=True,
     zip_safe=False,

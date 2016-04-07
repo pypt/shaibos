@@ -1,4 +1,7 @@
 include COPYING
 include README.rst
 include shaibos/logging.conf
+include shaibos/samples/1-backenderis/shaibos.yaml
+include shaibos/samples/2-frontenderis/shaibos.yaml
+include shaibos/samples/3-cto/shaibos.yaml
 include shaibos/templates/*.jinja2
