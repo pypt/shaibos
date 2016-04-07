@@ -16,7 +16,7 @@ except ImportError:
     import shaibos
 
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
-from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals
+from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals, invoice_totals
 from shaibos.util.log import get_logger
 
 # ---
@@ -26,6 +26,14 @@ logger = get_logger()
 
 def year_totals(invoices, year):
     gpm = gpm_percentages(invoices=invoices)
+
+    for invoice_number_prefix in invoices:
+        for invoice in invoices[invoice_number_prefix]:
+            totals = invoice_totals(invoice=invoice, year=year)
+            logger.info("%s: %s" % (invoice, "unpaid" if totals is None else totals))
+        # Additional space between EVRK codes
+        logger.info("")
+    logger.info("")
 
     totals_by_buyer = buyer_totals(invoices=invoices, year=year)
     logger.info("TOTALS by buyer:")
