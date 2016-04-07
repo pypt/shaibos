@@ -5,7 +5,7 @@ import tempfile
 
 import pdfkit
 
-from shaibos.save.html import render_html
+from shaibos.save.to_html import render_html
 
 pdfkit_options = {
     'page-size': 'A4',
