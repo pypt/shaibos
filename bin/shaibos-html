@@ -18,7 +18,7 @@ except ImportError:
 
 from shaibos.util.template import default_template_path
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
-from shaibos.save.to_html import save_html
+from shaibos.save.to_html import save_html, default_html_export_path
 from shaibos.util.log import get_logger
 
 # ---
@@ -40,15 +40,19 @@ def export_invoices_to_html(input_yaml, template, output_dir):
 
 
 if __name__ == "__main__":
+    fallback_html_export_path = default_html_export_path()
+
     parser = argparse.ArgumentParser(description='Export invoices to HTML.')
     parser.add_argument('-i', '--input_yaml', type=str, required=False, default='shaibos.yaml',
                         help='YAML file with invoices (leave empty to use shaibos.yaml)')
     parser.add_argument('-t', '--template', type=str, required=False, default=default_template_path(),
                         help='Jinja2 template for rendering the invoice (leave empty to use basic template)')
-    parser.add_argument('-o', '--output_dir', type=str, required=True, help='Output directory for HTML files')
+    parser.add_argument('-o', '--output_dir', type=str, required=False, default=fallback_html_export_path,
+                        help='Output directory for HTML files (leave empty to write to %s)' % fallback_html_export_path)
     args = parser.parse_args()
 
     logger.debug("Using input YAML file: %s" % args.input_yaml)
     logger.debug("Using Jinja2 template: %s" % args.template)
+    logger.debug("Writing to output path: %s" % args.output_dir)
 
     export_invoices_to_html(input_yaml=args.input_yaml, template=args.template, output_dir=args.output_dir)

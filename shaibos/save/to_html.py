@@ -35,3 +35,7 @@ def save_html_tempdir(invoice, template_path):
     save_html(invoice=invoice, template_path=template_path, output_path=temp_html_file_path)
 
     return temp_html_file_path
+
+
+def default_html_export_path():
+    return "invoices/html/"
