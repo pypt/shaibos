@@ -35,3 +35,7 @@ def save_pdf_tempdir(invoice, template_path):
     save_pdf(invoice=invoice, template_path=template_path, output_path=temp_pdf_file_path)
 
     return temp_pdf_file_path
+
+
+def default_pdf_export_path():
+    return "invoices/pdf/"
