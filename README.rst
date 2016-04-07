@@ -7,7 +7,7 @@ shaibos
 
 |Build Status| |Coverage Status|
 
-**Shaibos** yra pajamų žurnalas, sąskaitų generatorius bei mokesčių
+**shaibos** yra pajamų žurnalas, sąskaitų generatorius bei mokesčių
 skaičiuoklė, skirta kompiuterastams, vykdantiems `individualią veiklą
 pagal pažymą <https://www.vmi.lt/cms/web/kmdb/1.4.9>`__.
 
