@@ -60,7 +60,6 @@ PDF sąskaitų generavimui reikės
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: docs/images/example-html.jpg
-   :figwidth: 500
    :alt: 
 
 Naudojimas:
@@ -83,7 +82,6 @@ Sugeneruoja visas sąskaitas iš YAML failo HTML formatu.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: docs/images/example-pdf.jpg
-   :figwidth: 500
    :alt: 
 
 Naudojimas:
@@ -106,7 +104,6 @@ Sugeneruoja visas sąskaitas iš YAML failo PDF formatu.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: docs/images/example-totals.jpg
-   :figwidth: 500
    :alt: 
 
 Naudojimas:
@@ -128,7 +125,6 @@ pagal klientą ir veiklos rūšį, taip pat bendrą uždirbtų pinigų sumą.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: docs/images/example-taxfiling.jpg
-   :figwidth: 500
    :alt: 
 
 Naudojimas:
