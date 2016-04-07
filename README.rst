@@ -1,3 +1,7 @@
+.. raw:: html
+
+   <!-- pandoc -s README.mdown -o README.rst -->
+
 Shaibos
 =======
 
