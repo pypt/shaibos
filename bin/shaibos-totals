@@ -54,5 +54,7 @@ if __name__ == "__main__":
     parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
     args = parser.parse_args()
 
+    logger.debug("Using input YAML file: %s" % args.input_yaml)
+
     yaml_invoices = load_invoices_from_yaml_file(args.input_yaml)
     year_totals(invoices=yaml_invoices, year=args.year)
