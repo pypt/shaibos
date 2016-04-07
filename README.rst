@@ -74,7 +74,7 @@ turi du klientus Lietuvoje, išrašinėja sąskaitas vietine valiuta.
 Pavyzdyje pademonstruojama paprasta išrašytų sąskaitų struktūra.
 
 Pavyzdys:
-**`shaibos/samples/1-backenderis/shaibos.yaml <shaibos/samples/1-backenderis/shaibos.yaml>`__**
+`**shaibos/samples/1-backenderis/shaibos.yaml** <shaibos/samples/1-backenderis/shaibos.yaml>`__
 
 Frontenderis
 ~~~~~~~~~~~~
@@ -90,7 +90,7 @@ Pavyzdyje rodoma, kaip išrašyti sąskaitas keliomis kalbomis ir užsienio
 valiuta, automatiškai konvertuoti gautas pajamas į eurus (arba litus).
 
 Pavyzdys:
-**`shaibos/samples/2-frontenderis/shaibos.yaml <shaibos/samples/2-frontenderis/shaibos.yaml>`__**
+`**shaibos/samples/2-frontenderis/shaibos.yaml** <shaibos/samples/2-frontenderis/shaibos.yaml>`__
 
 CTO
 ~~~
@@ -106,7 +106,7 @@ Pavyzdyje aprašyta, kaip išrašyti sąskaitas už įvairias veiklas, kurioms
 taikomi skirtingi Gyventojų pajamų mokesčio (GPM) tarifai.
 
 Pavyzdys:
-**`shaibos/samples/3-cto/shaibos.yaml <shaibos/samples/3-cto/shaibos.yaml>`__**
+`**shaibos/samples/3-cto/shaibos.yaml** <shaibos/samples/3-cto/shaibos.yaml>`__
 
 Įrankiai
 --------
