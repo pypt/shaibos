@@ -2,6 +2,10 @@
 import glob
 
 from setuptools import setup, find_packages
+from pip.req import parse_requirements
+
+install_requirements = parse_requirements('requirements.txt', session=False)
+requirements = [str(ir.req) for ir in install_requirements]
 
 setup(
     name='shaibos',
@@ -24,6 +28,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Topic :: Office/Business :: Financial :: Accounting',
     ],
+    install_requires=requirements,
     test_suite='tests',
     packages=find_packages(exclude=['tests']),
     scripts=glob.glob('bin/shaibos-*'),
