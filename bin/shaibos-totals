@@ -31,6 +31,8 @@ def year_totals(invoices, year):
         for invoice in invoices[invoice_number_prefix]:
             totals = invoice_totals(invoice=invoice, year=year)
             logger.info("%s: %s" % (invoice, "unpaid" if totals is None else totals))
+        # Additional space between EVRK codes
+        logger.info("")
     logger.info("")
 
     totals_by_buyer = buyer_totals(invoices=invoices, year=year)
