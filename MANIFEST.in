@@ -1,0 +1,4 @@
+include COPYING
+include README.rst
+include shaibos/logging.conf
+include shaibos/templates/*.jinja2

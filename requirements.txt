@@ -1,3 +1,6 @@
+# Reading requirements.txt in setup.py
+pip
+
 # YAML
 pyyaml
 
