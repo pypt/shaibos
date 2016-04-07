@@ -3,8 +3,6 @@
 
 import argparse
 
-from shaibos.util.currency import tax_currency
-
 try:
     # noinspection PyUnresolvedReferences
     import shaibos
@@ -17,9 +15,10 @@ except ImportError:
     # noinspection PyUnresolvedReferences
     import shaibos
 
+from shaibos.util.currency import tax_currency
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
 from shaibos.tax.rates import default_income_type_code, evrk_code_to_activity_type_code
-from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals, invoice_totals
+from shaibos.tax.totals import gpm_percentages, activity_totals, tax_totals
 from shaibos.util.log import get_logger
 
 # ---
@@ -28,39 +27,11 @@ logger = get_logger()
 
 
 def tax_filing(invoices, year):
-    for invoice_number_prefix in invoices:
-        for invoice in invoices[invoice_number_prefix]:
-            totals_per_invoice = invoice_totals(invoice=invoice, year=year)
-            if totals_per_invoice is None:
-                continue
-            logger.info("%s: %s" % (invoice, totals_per_invoice))
-    logger.info("")
-
     currency = tax_currency(year)
-
     gpm = gpm_percentages(invoices=invoices)
 
-    totals_by_buyer = buyer_totals(invoices=invoices, year=year)
-    logger.info("TOTALS by buyer:")
-    for buyer_id, buyer_total in totals_by_buyer.items():
-        logger.info("* %s: %s" % (buyer_id, buyer_total))
-    logger.info("")
-
     totals_by_activity = activity_totals(invoices=invoices, year=year)
-    logger.info("TOTALS by activity:")
-    for evrk_code, activity_total in totals_by_activity.items():
-        logger.info("* %d (GPM %d%%): %s" % (evrk_code, gpm[evrk_code], activity_total))
-    logger.info("")
-
     totals = tax_totals(invoices=invoices, year=year)
-    logger.info("TOTAL¹:")
-    logger.info(" * %s" % totals)
-    logger.info(
-        "¹ Might be different from the sum of all invoices because expenses are counted for each activity separately.")
-    logger.info("")
-
-    logger.info("---")
-    logger.info("")
 
     logger.info('GPM308V (Individualios veiklos pajamos):')
     logger.info("")
@@ -111,9 +82,9 @@ def tax_filing(invoices, year):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Print tax filing information for invoices.')
+    parser = argparse.ArgumentParser(description='Print invoice totals for the specified year.')
     parser.add_argument('-i', '--input_yaml', type=str, required=True, help='YAML file with invoices')
-    parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
+    parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print invoice totals')
     args = parser.parse_args()
 
     yaml_invoices = load_invoices_from_yaml_file(args.input_yaml)

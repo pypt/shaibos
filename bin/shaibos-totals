@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import argparse
+
+try:
+    # noinspection PyUnresolvedReferences
+    import shaibos
+except ImportError:
+    import sys
+    import os
+
+    sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+
+    # noinspection PyUnresolvedReferences
+    import shaibos
+
+from shaibos.load.from_yaml import load_invoices_from_yaml_file
+from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals
+from shaibos.util.log import get_logger
+
+# ---
+
+logger = get_logger()
+
+
+def year_totals(invoices, year):
+    gpm = gpm_percentages(invoices=invoices)
+
+    totals_by_buyer = buyer_totals(invoices=invoices, year=year)
+    logger.info("TOTALS by buyer:")
+    for buyer_id, buyer_total in totals_by_buyer.items():
+        logger.info("* %s: %s" % (buyer_id, buyer_total))
+    logger.info("")
+
+    totals_by_activity = activity_totals(invoices=invoices, year=year)
+    logger.info("TOTALS by activity:")
+    for evrk_code, activity_total in totals_by_activity.items():
+        logger.info("* %d (GPM %d%%): %s" % (evrk_code, gpm[evrk_code], activity_total))
+    logger.info("")
+
+    totals = tax_totals(invoices=invoices, year=year)
+    logger.info("TOTAL¹:")
+    logger.info(" * %s" % totals)
+    logger.info("¹ Might be different from the tax totals because expenses are counted for each activity separately.")
+    logger.info("")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Print tax filing information for invoices.')
+    parser.add_argument('-i', '--input_yaml', type=str, required=True, help='YAML file with invoices')
+    parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
+    args = parser.parse_args()
+
+    yaml_invoices = load_invoices_from_yaml_file(args.input_yaml)
+    year_totals(invoices=yaml_invoices, year=args.year)
