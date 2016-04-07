@@ -51,7 +51,7 @@ Savybės
     pip install git+https://github.com/pypt/shaibos.git
 
 PDF sąskaitų generavimui reikės
-```wkhtmltopdf`` <http://wkhtmltopdf.org/downloads.html>`__.
+`wkhtmltopdf <http://wkhtmltopdf.org/downloads.html>`__.
 
 Pajamų failas ``shaibos.yaml``
 ------------------------------
