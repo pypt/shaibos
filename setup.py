@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import glob
 
 from setuptools import setup, find_packages
 
@@ -25,9 +26,5 @@ setup(
     ],
     test_suite='tests',
     packages=find_packages(exclude=['tests']),
-    scripts=[
-        'bin/shaibos-html',
-        'bin/shaibos-taxfiling',
-        'bin/shaibos-totals',
-    ],
+    scripts=glob.glob('bin/shaibos-*'),
 )
