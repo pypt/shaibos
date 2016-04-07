@@ -5,6 +5,11 @@
 shaibos
 =======
 
+.. figure:: docs/images/smulkusis-verslininkas.jpg
+   :alt: Smulkusis verslininkas
+
+   Smulkusis verslininkas
+
 |Build Status| |Coverage Status|
 
 **shaibos** yra pajamų žurnalas, sąskaitų generatorius bei mokesčių
