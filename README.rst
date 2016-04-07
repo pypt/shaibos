@@ -6,9 +6,7 @@ shaibos
 =======
 
 .. figure:: docs/images/smulkusis-verslininkas.jpg
-   :alt: Smulkusis verslininkas
-
-   Smulkusis verslininkas
+   :alt: 
 
 |Build Status| |Coverage Status|
 
