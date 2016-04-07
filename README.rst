@@ -53,61 +53,6 @@ Savybės
 PDF sąskaitų generavimui reikės
 `wkhtmltopdf <http://wkhtmltopdf.org/downloads.html>`__.
 
-Pajamų failas ``shaibos.yaml``
-------------------------------
-
-Per metus iš individualios veiklos gautos pajamos surašomos YAML formatu
-į vieną failą.
-
-Kompiuterastai, jų poreikiai bei kantrybė yra skirtingi, todėl
-pateikiame tris šio pajamų failo pavyzdžius:
-
-Backenderis
-~~~~~~~~~~~
-
-.. figure:: docs/images/backenderis.jpg
-   :alt: 
-
-Backenderis turi nesudėtingą pajamų struktūrą: užsiima tik programavimu,
-turi du klientus Lietuvoje, išrašinėja sąskaitas vietine valiuta.
-
-Pavyzdyje pademonstruojama paprasta išrašytų sąskaitų struktūra.
-
-Pavyzdys:
-`shaibos/samples/1-backenderis/shaibos.yaml <shaibos/samples/1-backenderis/shaibos.yaml>`__
-
-Frontenderis
-~~~~~~~~~~~~
-
-.. figure:: docs/images/frontenderis.jpg
-   :alt: 
-
-Frontenderis *Lietuvos webo profesionaluose* prisiskaitė, kad "Lietuvoj
-tai neuždirbsi", todėl suka varkes ne tik su vietiniais klientais, bet
-ir su amerikoniškais startupais.
-
-Pavyzdyje rodoma, kaip išrašyti sąskaitas keliomis kalbomis ir užsienio
-valiuta, automatiškai konvertuoti gautas pajamas į eurus (arba litus).
-
-Pavyzdys:
-`shaibos/samples/2-frontenderis/shaibos.yaml <shaibos/samples/2-frontenderis/shaibos.yaml>`__
-
-CTO
-~~~
-
-.. figure:: docs/images/cto.jpg
-   :alt: 
-
-CTO yra *Chief technology officer* tik LinkedIn'e, o iš tikrųjų dėl
-klientų nenoro specializuotis daro visokį velnią – ir paprogramina, ir
-serverius pareguliuoja, paprašytas ir palanges nuvalytų.
-
-Pavyzdyje aprašyta, kaip išrašyti sąskaitas už įvairias veiklas, kurioms
-taikomi skirtingi Gyventojų pajamų mokesčio (GPM) tarifai.
-
-Pavyzdys:
-`shaibos/samples/3-cto/shaibos.yaml <shaibos/samples/3-cto/shaibos.yaml>`__
-
 Įrankiai
 --------
 
@@ -197,6 +142,61 @@ arba:
 Parašo, ką rašyti į kiekvieną GPM308 deklaracijos "V"" priedo
 ("Individualios veiklos pajamos") langelį, taip pat apskaičiuoja
 galutinius mokesčius, kuriuos reikia pervesti VMI ir SoDrai.
+
+Pajamų failas ``shaibos.yaml``
+------------------------------
+
+Per metus iš individualios veiklos gautos pajamos surašomos YAML formatu
+į vieną failą.
+
+Kompiuterastai, jų poreikiai bei kantrybė yra skirtingi, todėl
+pateikiame tris šio pajamų failo pavyzdžius:
+
+Backenderis
+~~~~~~~~~~~
+
+.. figure:: docs/images/backenderis.jpg
+   :alt: 
+
+Backenderis turi nesudėtingą pajamų struktūrą: užsiima tik programavimu,
+turi du klientus Lietuvoje, išrašinėja sąskaitas vietine valiuta.
+
+Pavyzdyje pademonstruojama paprasta išrašytų sąskaitų struktūra.
+
+Pavyzdys:
+`shaibos/samples/1-backenderis/shaibos.yaml <shaibos/samples/1-backenderis/shaibos.yaml>`__
+
+Frontenderis
+~~~~~~~~~~~~
+
+.. figure:: docs/images/frontenderis.jpg
+   :alt: 
+
+Frontenderis *Lietuvos webo profesionaluose* prisiskaitė, kad "Lietuvoj
+tai neuždirbsi", todėl suka varkes ne tik su vietiniais klientais, bet
+ir su amerikoniškais startupais.
+
+Pavyzdyje rodoma, kaip išrašyti sąskaitas keliomis kalbomis ir užsienio
+valiuta, automatiškai konvertuoti gautas pajamas į eurus (arba litus).
+
+Pavyzdys:
+`shaibos/samples/2-frontenderis/shaibos.yaml <shaibos/samples/2-frontenderis/shaibos.yaml>`__
+
+CTO
+~~~
+
+.. figure:: docs/images/cto.jpg
+   :alt: 
+
+CTO yra *Chief technology officer* tik LinkedIn'e, o iš tikrųjų dėl
+klientų nenoro specializuotis daro visokį velnią – ir paprogramina, ir
+serverius pareguliuoja, paprašytas ir palanges nuvalytų.
+
+Pavyzdyje aprašyta, kaip išrašyti sąskaitas už įvairias veiklas, kurioms
+taikomi skirtingi Gyventojų pajamų mokesčio (GPM) tarifai.
+
+Pavyzdys:
+`shaibos/samples/3-cto/shaibos.yaml <shaibos/samples/3-cto/shaibos.yaml>`__
 
 To-Do
 -----
