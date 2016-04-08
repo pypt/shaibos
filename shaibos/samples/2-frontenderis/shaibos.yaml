@@ -65,10 +65,6 @@ buyers:
         address:
             en_US: "1 Deception Loop, Los Angeles, CA 12345, United States"
             lt_LT: "1 Deception Loop, Los Angeles, CA 12345, Jungtinės Valstijos"
-        # VMI deklaracijoje reikia įrašyti valstybių, iš kurių gavote pajamų,
-        # skaičių. Kai "country_code" nėra nurodytas, "shaibos" laiko, kad
-        # pajamas gavote iš Lietuvos.
-        country_code: "US"
         company_code: "B 123 456"
         vat_payer_code: "LU12345678"
         # Sąskaita bus išrašoma JAV doleriais

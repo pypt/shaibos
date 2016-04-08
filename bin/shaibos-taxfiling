@@ -40,7 +40,7 @@ def tax_filing(invoices, year):
     for evrk_code, activity_total in totals_by_activity.items():
         logger.info("* V1 (Pajamų rūšies kodas): %d" % default_income_type_code())
         logger.info("  V2 (Veiklos rūšies kodas): %d" % evrk_code_to_activity_type_code(evrk_code))
-        logger.info("  V3 (Valstybių skaičius): %d" % activity_total.country_count)
+        logger.info("  V3 (Valstybių skaičius): 1")
         logger.info("  V4 (Valstybės kodas): ")
         logger.info("  V5 (GPM tarifas): %d" % gpm[evrk_code])
         logger.info("  V6 (Pajamų suma): %2.2f %s" % (activity_total.income, activity_total.currency))

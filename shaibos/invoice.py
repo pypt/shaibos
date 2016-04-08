@@ -100,15 +100,13 @@ class Seller(Iterable):
 
 
 class Buyer(Iterable):
-    default_buyer_country_code = 'LT'
     default_locale = 'lt_LT'
 
-    def __init__(self, name, address, languages, country_code=default_buyer_country_code, personal_number=None,
-                 company_code=None, vat_payer_code=None, phone=None, fax=None, currency=None, correspondent_bank=None):
+    def __init__(self, name, address, languages, personal_number=None, company_code=None, vat_payer_code=None,
+                 phone=None, fax=None, currency=None, correspondent_bank=None):
         self.name = name
         self.address = address
         self.languages = languages
-        self.country_code = country_code
         self.personal_number = personal_number
         self.company_code = company_code
         self.vat_payer_code = vat_payer_code
@@ -129,7 +127,6 @@ class Buyer(Iterable):
             name=dictionary['name'],
             address=dictionary['address'],
             languages=dictionary['languages'],
-            country_code=dictionary.get('country_code', cls.default_buyer_country_code),
             personal_number=dictionary.get('personal_number', None),
             company_code=dictionary.get('company_code', None),
             vat_payer_code=dictionary.get('vat_payer_code', None),
