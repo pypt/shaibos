@@ -211,12 +211,6 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
             rate = first_amount / second_amount
 
         if rate:
-            # Round to the same fractional part
-            first_currency_decimal_places = len(str(__fractional_part(first_amount)))
-            second_currency_decimal_places = len(str(__fractional_part(second_amount)))
-            max_decimal_places = max(first_currency_decimal_places, second_currency_decimal_places)
-            rate = round_to_decimal_places(rate, max_decimal_places)
-
             break
 
     if rate is None:

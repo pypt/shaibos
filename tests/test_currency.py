@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from decimal import Decimal
-
 from dateutil import parser as dateparser
 from nose.tools import assert_raises
 
@@ -94,16 +92,25 @@ def test_lb_exchange_rate():
         '0.2896')
 
     # Post-Eurozone rate
-    assert lb_exchange_rate(from_currency_code='GBP', to_currency_code='EUR', date=post_eurozone_date) == Decimal(
-        '1.2839')
     assert lb_exchange_rate(from_currency_code='EUR', to_currency_code='GBP', date=post_eurozone_date) == Decimal(
         '0.7789')
+    assert str(lb_exchange_rate(from_currency_code='GBP', to_currency_code='EUR', date=post_eurozone_date)).startswith(
+        '1.2838618')
 
     # Pre-Eurozone rate
     assert lb_exchange_rate(from_currency_code='GBP', to_currency_code='LTL', date=pre_eurozone_date) == Decimal(
         '4.2015')
-    assert lb_exchange_rate(from_currency_code='LTL', to_currency_code='GBP', date=pre_eurozone_date) == Decimal(
-        '0.2380')
+    assert str(lb_exchange_rate(from_currency_code='LTL', to_currency_code='GBP', date=pre_eurozone_date)).startswith(
+        '0.2380102')
+
+    # Rounding errors
+    assert round_to_decimal_places(
+        number=(Decimal('416.00') * lb_exchange_rate(
+            from_currency_code='GBP',
+            to_currency_code='EUR',
+            date=dateparser.parse('2015-12-15')
+        )),
+        dec_places=2) == Decimal('573.63')
 
     # Unsupported currency
     assert_raises(Exception, lb_exchange_rate, 'USD', 'GBP', post_eurozone_date)
