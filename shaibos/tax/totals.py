@@ -74,11 +74,12 @@ class AddedTotals(UnicodeMixin):
 class CalculatedTotals(AddedTotals):
     """Invoice totals counter that calculates appropriate taxes."""
 
-    countries = set()
+    countries = None
 
     def __init__(self, income, currency, tax_rates):
         super(CalculatedTotals, self).__init__(currency=currency)
 
+        self.countries = set()
         decimal_places = currency_decimal_places(currency=self.currency)
 
         self.income = round_to_decimal_places(Decimal(income), decimal_places)
@@ -188,13 +189,15 @@ def activity_totals(invoices, year):
             if totals_per_invoice is None:
                 continue
 
-            totals_per_invoice.countries.add(invoice.buyer.country_code)
             evrk_code = invoice.activity.evrk_code
 
             if evrk_code in totals_by_activity:
                 totals_by_activity[evrk_code] += totals_per_invoice
             else:
                 totals_by_activity[evrk_code] = totals_per_invoice
+
+            country_code = invoice.buyer.country_code
+            totals_by_activity[evrk_code].countries.add(country_code)
 
     # Sort by EVRK code
     totals_by_activity = collections.OrderedDict(sorted(totals_by_activity.items()))
