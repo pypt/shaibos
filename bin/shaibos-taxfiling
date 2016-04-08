@@ -47,6 +47,7 @@ def tax_filing(invoices, year):
         logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f %s" % (activity_total.expenses, activity_total.currency))
         logger.info("  V9 (Atskaitoma ankstesnių mokestinių nuostolių suma): 0  # nebent tokių yra")
         logger.info("  V17 (Atskaitymų požymis): 1  # 30 procentų gautų (uždirbtų) individualios veiklos pajamų")
+        logger.info("  V18 (Mokėtina VSDĮ ir PSDĮ suma): nepildyti")
         logger.info("  ")
 
     logger.info("V11 (Išskaičiuota pajamų mokesčio suma): 0")
