@@ -91,7 +91,7 @@ def format_currency(amount, currency, language):
             # "Lt12,345,678.90" -> "LTL 12,345,678.90"
             # (https://en.wikipedia.org/wiki/ISO_4217#Position_of_ISO_4217_code_in_amounts)
             formatted_amount = re.sub(
-                pattern='Lt(?P<first_digit>\d)',
+                pattern='(?:Lt|LTL)(?P<first_digit>\d)',
                 repl='LTL' + nbsp + '\g<first_digit>',
                 string=formatted_amount
             )
