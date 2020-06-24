@@ -66,30 +66,187 @@ class TestFormatCurrency(unittest.TestCase):
 
 
 class TestAmountToWords(unittest.TestCase):
-    def test_amount_to_words(self):
-        self.assertEqual(amount_to_words(amount=Decimal('0.99'), currency='LTL'), u'nulis litų ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('1.99'), currency='LTL'), u'vienas litas ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('2.99'), currency='LTL'), u'du litai ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('10.99'), currency='LTL'), u'dešimt litų ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('11.99'), currency='LTL'), u'vienuolika litų ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('21.99'), currency='LTL'), u'dvidešimt vienas litas ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('29.99'), currency='LTL'), u'dvidešimt devyni litai ir 99 ct.')
+    def test_LTL_lt(self):
+        self.assertEqual(amount_to_words(amount=Decimal('0.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'nulis litų ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('1.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'vienas litas ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('2.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'du litai ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('10.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'dešimt litų ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('11.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'vienuolika litų ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('21.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'dvidešimt vienas litas ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('29.99'),
+                                         currency='LTL',
+                                         locale='lt_LT'),
+                         u'dvidešimt devyni litai ir 99 ct.')
 
-        self.assertEqual(amount_to_words(amount=Decimal('0.99'), currency='EUR'), u'nulis eurų ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('1.99'), currency='EUR'), u'vienas euras ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('2.99'), currency='EUR'), u'du eurai ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('10.99'), currency='EUR'), u'dešimt eurų ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('11.99'), currency='EUR'), u'vienuolika eurų ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('21.99'), currency='EUR'), u'dvidešimt vienas euras ir 99 ct.')
-        self.assertEqual(amount_to_words(amount=Decimal('29.99'), currency='EUR'), u'dvidešimt devyni eurai ir 99 ct.')
+    def test_EUR_lt(self):
+        self.assertEqual(amount_to_words(amount=Decimal('0.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'nulis eurų ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('1.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'vienas euras ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('2.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'du eurai ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('10.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'dešimt eurų ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('11.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'vienuolika eurų ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('21.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'dvidešimt vienas euras ir 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('29.99'),
+                                         currency='EUR',
+                                         locale='lt_LT'),
+                         u'dvidešimt devyni eurai ir 99 ct.')
 
-        self.assertEqual(amount_to_words(amount=Decimal('0.99'), currency='USD'), u'nulis JAV dolerių ir 99 ¢')
-        self.assertEqual(amount_to_words(amount=Decimal('1.99'), currency='USD'), u'vienas JAV doleris ir 99 ¢')
-        self.assertEqual(amount_to_words(amount=Decimal('2.99'), currency='USD'), u'du JAV doleriai ir 99 ¢')
-        self.assertEqual(amount_to_words(amount=Decimal('10.99'), currency='USD'), u'dešimt JAV dolerių ir 99 ¢')
-        self.assertEqual(amount_to_words(amount=Decimal('11.99'), currency='USD'), u'vienuolika JAV dolerių ir 99 ¢')
-        self.assertEqual(amount_to_words(amount=Decimal('21.99'), currency='USD'), u'dvidešimt vienas JAV doleris ir 99 ¢')
-        self.assertEqual(amount_to_words(amount=Decimal('29.99'), currency='USD'), u'dvidešimt devyni JAV doleriai ir 99 ¢')
+    def test_USD_lt(self):
+        self.assertEqual(amount_to_words(amount=Decimal('0.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'nulis JAV dolerių ir 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('1.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'vienas JAV doleris ir 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('2.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'du JAV doleriai ir 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('10.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'dešimt JAV dolerių ir 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('11.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'vienuolika JAV dolerių ir 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('21.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'dvidešimt vienas JAV doleris ir 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('29.99'),
+                                         currency='USD',
+                                         locale='lt_LT'),
+                         u'dvidešimt devyni JAV doleriai ir 99 ¢')
+
+
+    def test_LTL_en(self):
+        self.assertEqual(amount_to_words(amount=Decimal('0.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'zero litas and 99 ct.')
+
+        self.assertEqual(amount_to_words(amount=Decimal('1.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'one litas and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('2.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'two litas and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('10.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'ten litas and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('11.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'eleven litas and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('21.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'twenty-one litas and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('29.99'),
+                                         currency='LTL',
+                                         locale='en_US'),
+                         u'twenty-nine litas and 99 ct.')
+
+    def test_EUR_en(self):
+        self.assertEqual(amount_to_words(amount=Decimal('0.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'zero euro and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('1.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'one euro and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('2.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'two euro and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('10.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'ten euro and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('11.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'eleven euro and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('21.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'twenty-one euro and 99 ct.')
+        self.assertEqual(amount_to_words(amount=Decimal('29.99'),
+                                         currency='EUR',
+                                         locale='en_US'),
+                         u'twenty-nine euro and 99 ct.')
+
+    def test_USD_en(self):
+        self.assertEqual(amount_to_words(amount=Decimal('0.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'zero US dollars and 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('1.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'one US dollar and 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('2.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'two US dollars and 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('10.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'ten US dollars and 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('11.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'eleven US dollars and 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('21.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'twenty-one US dollar and 99 ¢')
+        self.assertEqual(amount_to_words(amount=Decimal('29.99'),
+                                         currency='USD',
+                                         locale='en_US'),
+                         u'twenty-nine US dollars and 99 ¢')
 
 
 # Reference rates: http://www.lb.lt/exchange/default.asp

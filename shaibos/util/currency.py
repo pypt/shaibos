@@ -30,30 +30,58 @@ class CurrencyStrings(object):
 
 
 __num2words_strings = {
-    'EUR': CurrencyStrings(
-        singular_nominative=u'euras',
-        plural_nominative=u'eurai',
-        plural_genitive=u'eurų',
-        subunit=u'ct.',
-    ),
-    'LTL': CurrencyStrings(
-        singular_nominative=u'litas',
-        plural_nominative=u'litai',
-        plural_genitive=u'litų',
-        subunit=u'ct.',
-    ),
-    'USD': CurrencyStrings(
-        singular_nominative=u'JAV doleris',
-        plural_nominative=u'JAV doleriai',
-        plural_genitive=u'JAV dolerių',
-        subunit=u'¢',
-    ),
-    'GBP': CurrencyStrings(
-        singular_nominative=u'svaras sterlingas',
-        plural_nominative=u'svarai sterlingai',
-        plural_genitive=u'svarų sterlingų',
-        subunit=u'p.',
-    ),
+    'lt': {
+        'EUR': CurrencyStrings(
+            singular_nominative=u'euras',
+            plural_nominative=u'eurai',
+            plural_genitive=u'eurų',
+            subunit=u'ct.',
+        ),
+        'LTL': CurrencyStrings(
+            singular_nominative=u'litas',
+            plural_nominative=u'litai',
+            plural_genitive=u'litų',
+            subunit=u'ct.',
+        ),
+        'USD': CurrencyStrings(
+            singular_nominative=u'JAV doleris',
+            plural_nominative=u'JAV doleriai',
+            plural_genitive=u'JAV dolerių',
+            subunit=u'¢',
+        ),
+        'GBP': CurrencyStrings(
+            singular_nominative=u'svaras sterlingas',
+            plural_nominative=u'svarai sterlingai',
+            plural_genitive=u'svarų sterlingų',
+            subunit=u'p.',
+        ),
+    },
+    'en': {
+        'EUR': CurrencyStrings(
+            singular_nominative=u'euro',
+            plural_nominative=u'euro',
+            plural_genitive=u'euro',
+            subunit=u'ct.',
+        ),
+        'LTL': CurrencyStrings(
+            singular_nominative=u'litas',
+            plural_nominative=u'litas',
+            plural_genitive=u'litas',
+            subunit=u'ct.',
+        ),
+        'USD': CurrencyStrings(
+            singular_nominative=u'US dollar',
+            plural_nominative=u'US dollars',
+            plural_genitive=u'US dollars',
+            subunit=u'¢',
+        ),
+        'GBP': CurrencyStrings(
+            singular_nominative=u'pound sterling',
+            plural_nominative=u'pound sterling',
+            plural_genitive=u'pound sterling',
+            subunit=u'p.',
+        ),
+    },
 }
 
 
@@ -68,8 +96,9 @@ def currency_decimal_places(currency):
     return __decimal_places[currency.upper()]
 
 
-def num2words_strings(currency):
-    return __num2words_strings[currency.upper()]
+def num2words_strings(locale, currency):
+    lang = locale.split('_')[0]
+    return __num2words_strings[lang][currency.upper()]
 
 
 def format_currency(amount, currency, language):
@@ -117,12 +146,12 @@ def __fractional_part(decimal_number):
         return int(str_fraction[len(zero_prefix):])
 
 
-def amount_to_words(amount, currency):
+def amount_to_words(amount, currency, locale):
     amount = round_to_decimal_places(amount, currency_decimal_places(currency))
     integer_part = __integer_part(amount)
     float_part = __fractional_part(amount)
 
-    strings = num2words_strings(currency)
+    strings = num2words_strings(locale, currency)
 
     last_two_digits = int(amount % 100)
     if 11 <= last_two_digits <= 20:
@@ -136,9 +165,19 @@ def amount_to_words(amount, currency):
         else:
             currency_string = strings.plural_nominative
 
-    return u'%s %s ir %d %s' % (
-        num2words(integer_part, lang='lt'),
+    sep_map = {
+        'lt_LT': 'ir',
+        'en_US': 'and',
+        'en_GB': 'and',
+    }
+    if locale not in sep_map:
+        raise NotImplementedException()
+
+    sep_string = sep_map[locale]
+    return u'%s %s %s %d %s' % (
+        num2words(integer_part, lang=locale),
         currency_string,
+        sep_string,
         float_part,
         strings.subunit
     )
