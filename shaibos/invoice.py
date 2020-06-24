@@ -9,8 +9,10 @@ from shaibos.util.iterable import Iterable
 
 
 class Bank(Iterable):
-    def __init__(self, account, name, swift=None):
+    def __init__(self, account=None, paypal_account=None, name=None,
+                 swift=None):
         self.account = account
+        self.paypal_account = paypal_account
         self.name = name
         self.swift = swift
 
@@ -20,8 +22,9 @@ class Bank(Iterable):
             return None
         else:
             return cls(
-                account=dictionary['account'],
-                name=dictionary['name'],
+                account=dictionary.get('account', None),
+                paypal_account=dictionary.get('paypal_account', None),
+                name=dictionary.get('name', None),
                 swift=dictionary.get('swift', None),
             )
 
