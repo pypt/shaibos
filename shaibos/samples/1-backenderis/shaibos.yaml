@@ -24,7 +24,7 @@ sellers:
         vsd_tax_rate: 28.5
         # Individualios veiklos pažymos numeris
         iea_certificate_number: 123456
-        # Individualios veiklos pažymos išdavimo data
+        # Individualios veiklos pažymos išdavimo data (nebūtina nurodyti)
         iea_certificate_issue_date: 2011-01-03
         # Asmens kodas
         personal_number: 38912010123

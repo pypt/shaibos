@@ -93,7 +93,7 @@ class Seller(Iterable):
             bank_credentials=Bank.from_dictionary(dictionary['bank_credentials']),
             vsd_tax_rate=dictionary['vsd_tax_rate'],
             iea_certificate_number=dictionary['iea_certificate_number'],
-            iea_certificate_issue_date=dictionary['iea_certificate_issue_date'],
+            iea_certificate_issue_date=dictionary.get('iea_certificate_issue_date', None),
             phone=dictionary.get('phone', None),
             fax=dictionary.get('fax', None),
         )

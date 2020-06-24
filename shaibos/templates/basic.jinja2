@@ -284,6 +284,7 @@
                         {% endcall %}
                     </td>
                 </tr>
+                {% if seller.iea_certificate_issue_date %}
                 <tr>
                     <td>
                         {% call(language) i18n_block() %}
@@ -300,6 +301,7 @@
                         {% endcall %}
                     </td>
                 </tr>
+                {% endif %}
                 <tr>
                     <td>
                         {% call(language) i18n_block() %}
