@@ -88,8 +88,7 @@ __num2words_strings = {
 def tax_currency(year):
     if year <= 2014:
         return 'LTL'
-    else:
-        return 'EUR'
+    return 'EUR'
 
 
 def currency_decimal_places(currency):
@@ -104,24 +103,25 @@ def num2words_strings(locale, currency):
 def format_currency(amount, currency, language):
     locale = babel.Locale.parse(language)
     money = Money(amount=float(amount), currency=str(currency.upper()))
-    formatted_amount = money.format(locale=language, pattern=locale.currency_formats.get('accounting'))
+    formatted_amount = money.format(locale=language,
+                                    pattern=locale.currency_formats.get('accounting'))
 
     if currency.upper() == 'LTL':
         nbsp = u"\xa0"
-        regex_nbsp_or_space = "(" + nbsp + "|\s)"
+        regex_nbsp_or_space = "(" + nbsp + r"|\s)"
         if language == 'lt_LT':
             # "12 345 678,90 LTL" -> "12 345 678,90 Lt"
             formatted_amount = re.sub(
-                pattern='(?P<last_digit>\d)' + regex_nbsp_or_space + 'LTL$',
-                repl='\g<last_digit>' + nbsp + 'Lt',
+                pattern=r'(?P<last_digit>\d)' + regex_nbsp_or_space + 'LTL$',
+                repl=r'\g<last_digit>' + nbsp + 'Lt',
                 string=formatted_amount
             )
         elif language.startswith('en_'):
             # "Lt12,345,678.90" -> "LTL 12,345,678.90"
             # (https://en.wikipedia.org/wiki/ISO_4217#Position_of_ISO_4217_code_in_amounts)
             formatted_amount = re.sub(
-                pattern='(?:Lt|LTL)(?P<first_digit>\d)',
-                repl='LTL' + nbsp + '\g<first_digit>',
+                pattern=r'(?:Lt|LTL)(?P<first_digit>\d)',
+                repl='LTL' + nbsp + r'\g<first_digit>',
                 string=formatted_amount
             )
 
@@ -171,7 +171,7 @@ def amount_to_words(amount, currency, locale):
         'en_GB': 'and',
     }
     if locale not in sep_map:
-        raise NotImplementedException()
+        raise NotImplementedError()
 
     sep_string = sep_map[locale]
     return u'%s %s %s %d %s' % (
@@ -191,7 +191,8 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     """
     Usage:
 
-    print lb_exchange_rate(from_currency_code='USD', to_currency_code='LTL', date=dateutil.parser.parse('2013-01-01'))
+    print(lb_exchange_rate(from_currency_code='USD', to_currency_code='LTL',
+                           date=dateutil.parser.parse('2013-01-01')))
 
     https://www.lb.lt/webservices/FxRates/
     """
@@ -204,8 +205,10 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     exchange_tax_currency = tax_currency(date.year)
 
     supported_currencies = {'EUR', 'LTL'}
-    if from_currency_code not in supported_currencies and to_currency_code not in supported_currencies:
-        raise Exception('Only conversions from / to ' + ','.join(supported_currencies) + ' are supported')
+    if from_currency_code not in supported_currencies and \
+            to_currency_code not in supported_currencies:
+        raise Exception('Only conversions from / to ' + ','.join(supported_currencies) +
+                        ' are supported')
 
     if exchange_tax_currency == 'EUR':
         if 'EUR' not in {from_currency_code, to_currency_code}:
@@ -253,6 +256,7 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
             break
 
     if rate is None:
-        raise Exception("Currency rate between %s and %s was not found" % (from_currency_code, to_currency_code))
+        raise Exception("Currency rate between {} and {} was not found".format(from_currency_code,
+                                                                               to_currency_code))
 
     return rate

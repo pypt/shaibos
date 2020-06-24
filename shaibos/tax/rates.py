@@ -15,7 +15,8 @@ class TaxRates(object):
 
     def __eq__(self, other):
         if isinstance(other, TaxRates):
-            return (self.expenses_rate == other.expenses_rate and self.sodra_tax_base == other.sodra_tax_base and
+            return (self.expenses_rate == other.expenses_rate and
+                    self.sodra_tax_base == other.sodra_tax_base and
                     self.vsd_rate == other.vsd_rate and self.psd_rate == other.psd_rate and
                     self.gpm_rate == other.gpm_rate)
         return NotImplemented

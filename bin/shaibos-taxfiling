@@ -4,16 +4,14 @@
 import argparse
 
 try:
-    # noinspection PyUnresolvedReferences
-    import shaibos
+    import shaibos  # noqa pylint: disable=unused-import
 except ImportError:
     import sys
     import os
 
     sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
 
-    # noinspection PyUnresolvedReferences
-    import shaibos
+    import shaibos  # noqa pylint: disable=unused-import
 
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
 from shaibos.tax.rates import default_income_type_code, evrk_code_to_activity_type_code
@@ -34,17 +32,18 @@ def tax_filing(invoices, year):
     logger.info('GPM308V (Individualios veiklos pajamos):')
     logger.info("")
 
-    logger.info("6 (Mokestinis laikotarpis): %d" % year)
+    logger.info("6 (Mokestinis laikotarpis): %d", year)
     logger.info("")
 
     for evrk_code, activity_total in totals_by_activity.items():
-        logger.info("* V1 (Pajamų rūšies kodas): %d" % default_income_type_code())
-        logger.info("  V2 (Veiklos rūšies kodas): %d" % evrk_code_to_activity_type_code(evrk_code))
+        logger.info("* V1 (Pajamų rūšies kodas): %d", default_income_type_code())
+        logger.info("  V2 (Veiklos rūšies kodas): %d", evrk_code_to_activity_type_code(evrk_code))
         logger.info("  V3 (Valstybių skaičius): 1")
         logger.info("  V4 (Valstybės kodas): ")
-        logger.info("  V5 (GPM tarifas): %d" % gpm[evrk_code])
-        logger.info("  V6 (Pajamų suma): %2.2f %s" % (activity_total.income, activity_total.currency))
-        logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f %s" % (activity_total.expenses, activity_total.currency))
+        logger.info("  V5 (GPM tarifas): %d", gpm[evrk_code])
+        logger.info("  V6 (Pajamų suma): %2.2f %s", activity_total.income, activity_total.currency)
+        logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f %s",
+                    activity_total.expenses, activity_total.currency)
         logger.info("  V9 (Atskaitoma ankstesnių mokestinių nuostolių suma): 0  # nebent tokių yra")
         logger.info("  V17 (Atskaitymų požymis): 1  # 30 procentų gautų (uždirbtų) individualios veiklos pajamų")
         logger.info("  V18 (Mokėtina VSDĮ ir PSDĮ suma): nepildyti")
@@ -70,16 +69,14 @@ def tax_filing(invoices, year):
     logger.info("VSD:")
     logger.info("* Įmokos kodas: 292")
     logger.info("* Sąskaita: http://www.sodra.lt/surenkamosios-saskaitos")
-    logger.info("* Suma: %2.2f %s" % (totals.vsd, totals.currency))
+    logger.info("* Suma: %2.2f %s", totals.vsd, totals.currency)
     logger.info("")
 
     logger.info("PSD:")
     logger.info("* Įmokos kodas: 343")
     logger.info("* Sąskaita: http://www.sodra.lt/surenkamosios-saskaitos")
-    logger.info("* Suma: %2.2f %s minus per mokestinius metus kas mėnesį sumokėtos įmokos" % (
-        totals.psd,
-        totals.currency
-    ))
+    logger.info("* Suma: %2.2f %s minus per mokestinius metus kas mėnesį sumokėtos įmokos",
+                totals.psd, totals.currency)
 
 
 if __name__ == "__main__":
@@ -89,7 +86,7 @@ if __name__ == "__main__":
     parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print invoice totals')
     args = parser.parse_args()
 
-    logger.debug("Using input YAML file: %s" % args.input_yaml)
+    logger.debug("Using input YAML file: %s", args.input_yaml)
 
     yaml_invoices = load_invoices_from_yaml_file(args.input_yaml)
     tax_filing(invoices=yaml_invoices, year=args.year)

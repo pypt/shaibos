@@ -178,7 +178,7 @@ invoices:
           paid: True
           date: 2016-01-01
 
-    """
+    """  # noqa
 
     def __reset_test_invoices(self):
         self.test_invoices = load_invoices_from_yaml_string(yaml_string=self.test_invoices_yaml)
@@ -191,7 +191,8 @@ invoices:
         for invoice_number_prefix in self.test_invoices:
 
             activity_invoices = self.test_invoices[invoice_number_prefix]
-            first_invoice = invoice_totals(invoice=activity_invoices[0], year=self.test_invoices_year)
+            first_invoice = invoice_totals(invoice=activity_invoices[0],
+                                           year=self.test_invoices_year)
 
             if invoice_number_prefix == 'VVS':
                 self.assertEqual(first_invoice.income, Decimal('5799.71'))  # 199.99 * 29
@@ -231,7 +232,8 @@ invoices:
 
     def test_activity_totals(self):
 
-        totals_by_activity = activity_totals(invoices=self.test_invoices, year=self.test_invoices_year)
+        totals_by_activity = activity_totals(invoices=self.test_invoices,
+                                             year=self.test_invoices_year)
 
         gpm_5_percent = totals_by_activity[474100]
         gpm_15_percent = totals_by_activity[620100]
