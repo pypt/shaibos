@@ -28,5 +28,4 @@ money
 babel
 
 # Unit tests + coverage
-nose
 coverage
