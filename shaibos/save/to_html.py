@@ -6,6 +6,7 @@ import tempfile
 from jinja2 import Environment
 
 from shaibos.util.currency import format_currency
+from shaibos.util.date import format_date
 
 
 def render_html(invoice, template_path):
@@ -14,6 +15,7 @@ def render_html(invoice, template_path):
     env = Environment(trim_blocks=True, lstrip_blocks=True)
 
     env.globals.update(format_currency=format_currency)
+    env.globals.update(format_date=format_date)
 
     return env.from_string(template).render(invoice)
 

@@ -236,9 +236,10 @@
         </td>
         <td>
             {% call(language) i18n_block() %}
-                {% if language == 'lt_LT' %}Išrašyta: <strong>{{ date.strftime('%Y-%m-%d') }}</strong>{% endif %}
-                {% if language == 'en_US' %}Date: <strong>{{ date.strftime('%B %d, %Y') }}</strong>{% endif %}
-                {% if language == 'en_GB' %}Date: <strong>{{ date.strftime('%d %B %Y') }}</strong>{% endif %}
+                {% if language == 'lt_LT' %}Išrašyta:{% endif %}
+                {% if language == 'en_US' %}Date:{% endif %}
+                {% if language == 'en_GB' %}Date:{% endif %}
+                <strong>{{ format_date(date, language) }}</strong>
             {% endcall %}
         </td>
     </tr>
@@ -288,16 +289,14 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}
                                 Individualios veiklos išdavimo data:
-                                <strong>{{ seller.iea_certificate_issue_date.strftime('%Y-%m-%d') }}</strong>
                             {% endif %}
                             {% if language == 'en_US' %}
                                 Personal business ID issue date:
-                                <strong>{{ seller.iea_certificate_issue_date.strftime('%B %d, %Y') }}</strong>
                             {% endif %}
                             {% if language == 'en_GB' %}
                                 Personal business ID issue date:
-                                <strong>{{ seller.iea_certificate_issue_date.strftime('%d %B %Y') }}</strong>
                             {% endif %}
+                            <strong>{{ format_date(seller.iea_certificate_issue_date, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
