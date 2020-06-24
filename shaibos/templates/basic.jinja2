@@ -189,7 +189,7 @@
     <ul class="i18n_block">
         {% for language in buyer.languages -%}
             {# No newlines between <li></li> so that there would be no extra whitespace between brackets #}
-            <li>{{ caller(language) }}</li>
+            <li class="lang-{{ language }}">{{ caller(language) }}</li>
         {% endfor %}
     </ul>
 {%- endmacro %}
