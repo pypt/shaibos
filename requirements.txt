@@ -10,9 +10,6 @@ num2words
 # HTML template
 Jinja2
 
-# PDF (also requires wkhtmltopdf)
-pdfkit
-
 # LB exchange rates
 requests
 lxml
