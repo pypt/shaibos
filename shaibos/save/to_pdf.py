@@ -2,27 +2,21 @@
 
 import os
 import tempfile
-
-import pdfkit
+import subprocess
 
 from shaibos.save.to_html import render_html
 
-pdfkit_options = {
-    'page-size': 'A4',
-    'margin-top': '0.25in',
-    'margin-right': '0.25in',
-    'margin-bottom': '0.25in',
-    'margin-left': '0.25in',
-    'encoding': 'UTF-8',
-    'no-outline': None,
-    'quiet': '',
-}
-
 
 def save_pdf(invoice, template_path, output_path):
-    html = render_html(invoice=invoice, template_path=template_path)
-    pdfkit.from_string(html, output_path, options=pdfkit_options)
-
+    with tempfile.NamedTemporaryFile(mode='wb', suffix='.html', delete=False) as f:
+        try:
+            html = render_html(invoice=invoice, template_path=template_path)
+            f.write(html.encode('utf-8'))
+            f.close()
+            subprocess.check_call(['chromium-browser', '--headless', '--disable-gpu',
+                                   '--print-to-pdf=' + output_path, f.name])
+        finally:
+            os.remove(f.name)
 
 def save_pdf_tempdir(invoice, template_path):
     temp_dir = tempfile.mkdtemp()

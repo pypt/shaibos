@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
+import unittest
 
 from shaibos.load.from_yaml import load_invoices_from_yaml_string
 from shaibos.tax.totals import invoice_totals, buyer_totals, activity_totals, tax_totals
 
 
 # noinspection PyPep8Naming
-class TestClass:
+class TestClass(unittest.TestCase):
     test_invoices = None
     test_invoices_year = 2015
 
@@ -193,40 +194,40 @@ invoices:
             first_invoice = invoice_totals(invoice=activity_invoices[0], year=self.test_invoices_year)
 
             if invoice_number_prefix == 'VVS':
-                assert first_invoice.income == Decimal('5799.71')  # 199.99 * 29
-                assert first_invoice.expenses == Decimal('1739.91')  # total * 0.3
-                assert first_invoice.tax_base == Decimal('4059.80')  # total - expenses
-                assert first_invoice.sodra_tax_base == Decimal('2029.90')  # tax_base / 2
-                assert first_invoice.vsd == Decimal('578.52')  # sodra_tax_base * 0.285
-                assert first_invoice.psd == Decimal('182.69')  # sodra_tax_base * 0.09
-                assert first_invoice.gpm == Decimal('202.99')  # tax_base * 0.05
-                assert first_invoice.tax == Decimal('964.20')  # vsd + psd + gpm
-                assert first_invoice.profit == Decimal('4835.51')  # total - tax
+                self.assertEqual(first_invoice.income, Decimal('5799.71'))  # 199.99 * 29
+                self.assertEqual(first_invoice.expenses, Decimal('1739.91'))  # total * 0.3
+                self.assertEqual(first_invoice.tax_base, Decimal('4059.80'))  # total - expenses
+                self.assertEqual(first_invoice.sodra_tax_base, Decimal('2029.90'))  # tax_base / 2
+                self.assertEqual(first_invoice.vsd, Decimal('578.52'))  # sodra_tax_base * 0.285
+                self.assertEqual(first_invoice.psd, Decimal('182.69'))  # sodra_tax_base * 0.09
+                self.assertEqual(first_invoice.gpm, Decimal('202.99'))  # tax_base * 0.05
+                self.assertEqual(first_invoice.tax, Decimal('964.20'))  # vsd + psd + gpm
+                self.assertEqual(first_invoice.profit, Decimal('4835.51'))  # total - tax
 
             elif invoice_number_prefix == 'VVP':
-                assert first_invoice.gpm == Decimal('18.90')  # tax_base * 0.15
+                self.assertEqual(first_invoice.gpm, Decimal('18.90'))  # tax_base * 0.15
 
     def test_buyer_totals(self):
         totals_by_buyer = buyer_totals(invoices=self.test_invoices, year=self.test_invoices_year)
 
-        assert len(totals_by_buyer) == 2
+        self.assertEqual(len(totals_by_buyer), 2)
 
         judaskinas = totals_by_buyer[u"UAB „Judaškinas ir co.“"]
         saraskinas = totals_by_buyer[u"UAB „Šaraškinas ir co.“"]
 
         # 29 * 199.99
-        assert judaskinas.income == Decimal("5799.71")
+        self.assertEqual(judaskinas.income, Decimal("5799.71"))
 
         # (6 * 30.00) + (29 * 199.99) + (100.99 GBP / 0.73160)
-        assert saraskinas.income == Decimal("6117.75")
+        self.assertEqual(saraskinas.income, Decimal("6117.75"))
 
         # 5799.71 * 0.7 * 0.05
-        assert judaskinas.gpm == Decimal("202.99")
+        self.assertEqual(judaskinas.gpm, Decimal("202.99"))
 
         # ((6 * 30.00) + (100.99 GBP / 0.73160)) * 0.7 * 0.15
         # +
         # (29 * 199.99) * 0.7 * 0.05
-        assert saraskinas.gpm == Decimal("236.38")
+        self.assertEqual(saraskinas.gpm, Decimal("236.38"))
 
     def test_activity_totals(self):
 
@@ -236,45 +237,45 @@ invoices:
         gpm_15_percent = totals_by_activity[620100]
 
         # (29 * 199.99) + (29 * 199.99)
-        assert gpm_5_percent.income == Decimal("11599.42")
+        self.assertEqual(gpm_5_percent.income, Decimal("11599.42"))
 
         # (6 * 30.00) + (100.99 GBP / 0.73160)
-        assert gpm_15_percent.income == Decimal("318.04")
+        self.assertEqual(gpm_15_percent.income, Decimal("318.04"))
 
         # 11599.42 * 0.7 * 0.05
-        assert gpm_5_percent.gpm == Decimal("405.98")
+        self.assertEqual(gpm_5_percent.gpm, Decimal("405.98"))
 
         # 318.04 * 0.7 * 0.15
-        assert gpm_15_percent.gpm == Decimal("33.39")
+        self.assertEqual(gpm_15_percent.gpm, Decimal("33.39"))
 
     def test_tax_totals(self):
 
         totals = tax_totals(invoices=self.test_invoices, year=self.test_invoices_year)
 
         # 11599.42 + 318.04
-        assert totals.income == Decimal("11917.46")
+        self.assertEqual(totals.income, Decimal("11917.46"))
 
         # (11599.42 * 0.3) + (318.04 * 0.3)
-        assert totals.expenses == Decimal("3575.24")
+        self.assertEqual(totals.expenses, Decimal("3575.24"))
 
         # (11599.42 - (11599.42 * 0.3)) + (318.04 - (318.04 * 0.3))
-        assert totals.tax_base == Decimal("8342.22")
+        self.assertEqual(totals.tax_base, Decimal("8342.22"))
 
         # (11599.42 - (11599.42 * 0.3)) * 0.5 + (318.04 - ((318.04 * 0.3))) * 0.5
         # (expenses for each type is rounded)
-        assert totals.sodra_tax_base == Decimal("4171.12")
+        self.assertEqual(totals.sodra_tax_base, Decimal("4171.12"))
 
         # 4171.12 * 0.285
-        assert totals.vsd == Decimal("1188.77")
+        self.assertEqual(totals.vsd, Decimal("1188.77"))
 
         # 4171.12 * 0.09
-        assert totals.psd == Decimal("375.40")
+        self.assertEqual(totals.psd, Decimal("375.40"))
 
         # 405.98 + 33.39
-        assert totals.gpm == Decimal("439.37")
+        self.assertEqual(totals.gpm, Decimal("439.37"))
 
         # 1188.77 + 375.40 + 439.37
-        assert totals.tax == Decimal("2003.54")
+        self.assertEqual(totals.tax, Decimal("2003.54"))
 
         # 11917.46 - 2003.54
-        assert totals.profit == Decimal("9913.92")
+        self.assertEqual(totals.profit, Decimal("9913.92"))
