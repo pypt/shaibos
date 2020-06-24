@@ -616,7 +616,9 @@
         {% endcall %}:
     </div>
     <div class="signature-line">
-        <strong>{{ total_in_words }}</strong>
+        {% call(language) i18n_block() %}
+            <strong>{{ total_in_words(language) }}</strong>
+        {% endcall %}
         &nbsp;{# Can't be empty or doesn't expand through the whole width #}
     </div>
 </div>

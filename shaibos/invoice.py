@@ -253,9 +253,8 @@ class Invoice(Iterable):
             total += item.subtotal
         return total
 
-    @property
-    def total_in_words(self):
-        return amount_to_words(self.total, self.currency)
+    def total_in_words(self, locale):
+        return amount_to_words(self.total, self.currency, locale)
 
     def filename_prefix(self):
         return 'invoice_%s%s' % (
