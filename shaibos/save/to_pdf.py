@@ -18,6 +18,7 @@ def save_pdf(invoice, template_path, output_path):
         finally:
             os.remove(f.name)
 
+
 def save_pdf_tempdir(invoice, template_path):
     temp_dir = tempfile.mkdtemp()
 

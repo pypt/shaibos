@@ -102,22 +102,26 @@ class CalculatedTotals(AddedTotals):
     @property
     def sodra_tax_base(self):
         decimal_places = currency_decimal_places(currency=self.currency)
-        return round_to_decimal_places(self.tax_base * self.tax_rates.sodra_tax_base, decimal_places)
+        return round_to_decimal_places(self.tax_base * self.tax_rates.sodra_tax_base,
+                                       decimal_places)
 
     @property
     def vsd(self):
         decimal_places = currency_decimal_places(currency=self.currency)
-        return round_to_decimal_places(Decimal(self.sodra_tax_base * self.tax_rates.vsd_rate), decimal_places)
+        return round_to_decimal_places(Decimal(self.sodra_tax_base * self.tax_rates.vsd_rate),
+                                       decimal_places)
 
     @property
     def psd(self):
         decimal_places = currency_decimal_places(currency=self.currency)
-        return round_to_decimal_places(Decimal(self.sodra_tax_base * self.tax_rates.psd_rate), decimal_places)
+        return round_to_decimal_places(Decimal(self.sodra_tax_base * self.tax_rates.psd_rate),
+                                       decimal_places)
 
     @property
     def gpm(self):
         decimal_places = currency_decimal_places(currency=self.currency)
-        return round_to_decimal_places(Decimal(self.tax_base * self.tax_rates.gpm_rate), decimal_places)
+        return round_to_decimal_places(Decimal(self.tax_base * self.tax_rates.gpm_rate),
+                                       decimal_places)
 
     @property
     def tax(self):
@@ -132,12 +136,12 @@ def invoice_totals(invoice, year):
     year_tax_currency = tax_currency(year)
 
     if not invoice.has_been_paid():
-        logger.warn("Invoice '%s' hasn't been marked as paid, skipping" % invoice)
+        logger.warn("Invoice '%s' hasn't been marked as paid, skipping", invoice)
         return None
 
     paid_year = invoice.payment_date()
     if not paid_year.year == year:
-        logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping" % (invoice, year))
+        logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping", invoice, year)
         return None
 
     paid_amount = invoice.paid_amount()

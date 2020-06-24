@@ -3,7 +3,12 @@
 from dateutil import parser as dateparser
 import unittest
 
-from shaibos.util.currency import *
+from shaibos.util.currency import amount_to_words
+from shaibos.util.currency import format_currency
+from shaibos.util.currency import lb_exchange_rate
+from shaibos.util.currency import round_to_decimal_places
+from shaibos.util.currency import Decimal
+
 
 class TestRound(unittest.TestCase):
 
@@ -155,7 +160,6 @@ class TestAmountToWords(unittest.TestCase):
                                          currency='USD',
                                          locale='lt_LT'),
                          u'dvidešimt devyni JAV doleriai ir 99 ¢')
-
 
     def test_LTL_en(self):
         self.assertEqual(amount_to_words(amount=Decimal('0.99'),

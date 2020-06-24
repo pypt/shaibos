@@ -6,22 +6,19 @@ import argparse
 import os
 
 try:
-    # noinspection PyUnresolvedReferences
-    import shaibos
+    import shaibos  # noqa pylint: disable=unused-import
 except ImportError:
     import sys
 
     sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
 
-    # noinspection PyUnresolvedReferences
-    import shaibos
+    import shaibos  # noqa pylint: disable=unused-import
 
 from shaibos.util.template import default_template_path
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
 from shaibos.save.to_html import save_html, default_html_export_path
 from shaibos.util.log import get_logger
 
-# ---
 
 logger = get_logger()
 
@@ -36,7 +33,7 @@ def export_invoices_to_html(input_yaml, template, output_dir):
         for invoice in invoices[invoice_number_prefix]:
             output_html_path = os.path.join(output_dir, invoice.filename_prefix() + '.html')
             save_html(invoice=invoice, template_path=template, output_path=output_html_path)
-            logger.info('Saved HTML invoice %s' % output_html_path)
+            logger.info('Saved HTML invoice %s', output_html_path)
 
 
 if __name__ == "__main__":
@@ -51,8 +48,8 @@ if __name__ == "__main__":
                         help='Output directory for HTML files (leave empty to write to %s)' % fallback_html_export_path)
     args = parser.parse_args()
 
-    logger.debug("Using input YAML file: %s" % args.input_yaml)
-    logger.debug("Using Jinja2 template: %s" % args.template)
-    logger.debug("Writing to output path: %s" % args.output_dir)
+    logger.debug("Using input YAML file: %s", args.input_yaml)
+    logger.debug("Using Jinja2 template: %s", args.template)
+    logger.debug("Writing to output path: %s", args.output_dir)
 
     export_invoices_to_html(input_yaml=args.input_yaml, template=args.template, output_dir=args.output_dir)

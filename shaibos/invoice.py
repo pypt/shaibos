@@ -3,8 +3,11 @@
 from decimal import Decimal
 from collections import defaultdict
 
-from shaibos.util.currency import amount_to_words, currency_decimal_places, round_to_decimal_places, lb_exchange_rate, \
-    tax_currency
+from shaibos.util.currency import amount_to_words
+from shaibos.util.currency import currency_decimal_places
+from shaibos.util.currency import round_to_decimal_places
+from shaibos.util.currency import lb_exchange_rate
+from shaibos.util.currency import tax_currency
 from shaibos.util.iterable import Iterable
 
 
@@ -20,13 +23,10 @@ class Bank(Iterable):
     def from_dictionary(cls, dictionary):
         if dictionary is None:
             return None
-        else:
-            return cls(
-                account=dictionary.get('account', None),
-                paypal_account=dictionary.get('paypal_account', None),
-                name=dictionary.get('name', None),
-                swift=dictionary.get('swift', None),
-            )
+        return cls(account=dictionary.get('account', None),
+                   paypal_account=dictionary.get('paypal_account', None),
+                   name=dictionary.get('name', None),
+                   swift=dictionary.get('swift', None))
 
 
 class CorrespondentBank(Bank):
@@ -73,8 +73,8 @@ class Item(Iterable):
 
 
 class Seller(Iterable):
-    def __init__(self, name, personal_number, address, email, bank_credentials, vsd_tax_rate, iea_certificate_number,
-                 iea_certificate_issue_date, phone=None, fax=None):
+    def __init__(self, name, personal_number, address, email, bank_credentials, vsd_tax_rate,
+                 iea_certificate_number, iea_certificate_issue_date, phone=None, fax=None):
         self.name = name
         self.personal_number = personal_number
         self.address = address
@@ -105,8 +105,9 @@ class Seller(Iterable):
 class Buyer(Iterable):
     default_locale = 'lt_LT'
 
-    def __init__(self, name, address, languages, personal_number=None, company_code=None, vat_payer_code=None,
-                 phone=None, fax=None, currency=None, correspondent_bank=None):
+    def __init__(self, name, address, languages, personal_number=None, company_code=None,
+                 vat_payer_code=None, phone=None, fax=None, currency=None,
+                 correspondent_bank=None):
         self.name = name
         self.address = address
         self.languages = languages
@@ -121,11 +122,12 @@ class Buyer(Iterable):
     def __unicode__(self):
         if isinstance(self.name, dict):
             return self.name[self.default_locale]
-        else:
-            return self.name
+        return self.name
 
     @classmethod
     def from_dictionary(cls, dictionary):
+        correspondent_bank = CorrespondentBank.from_dictionary(
+            dictionary.get('correspondent_bank', None))
         return cls(
             name=dictionary['name'],
             address=dictionary['address'],
@@ -136,7 +138,7 @@ class Buyer(Iterable):
             phone=dictionary.get('phone', None),
             fax=dictionary.get('fax', None),
             currency=dictionary.get('currency', None),
-            correspondent_bank=CorrespondentBank.from_dictionary(dictionary.get('correspondent_bank', None)),
+            correspondent_bank=correspondent_bank,
         )
 
 
@@ -147,7 +149,8 @@ class Payment(Iterable):
             if amount is None:
                 raise Exception('Please define amount paid for invoice when custom currency is set')
             if date is None:
-                raise Exception('Please define date when the invoice was paid when custom currency is set')
+                raise Exception('Please define date when the invoice was paid when custom '
+                                'currency is set')
 
         self.paid = paid
         self.date = date
@@ -158,17 +161,15 @@ class Payment(Iterable):
     def from_dictionary(cls, dictionary):
         if dictionary is None:
             return None
-        else:
-            return cls(
-                paid=dictionary['paid'],
-                date=dictionary.get('date', None),
-                amount=dictionary.get('amount', None),
-                currency=dictionary.get('currency', None),
-            )
+        return cls(paid=dictionary['paid'],
+                   date=dictionary.get('date', None),
+                   amount=dictionary.get('amount', None),
+                   currency=dictionary.get('currency', None))
 
 
 class Activity(Iterable):
-    def __init__(self, title, evrk_code, gpm_tax_rate, invoice_number_prefix, invoice_number_length):
+    def __init__(self, title, evrk_code, gpm_tax_rate, invoice_number_prefix,
+                 invoice_number_length):
         self.title = title
         self.evrk_code = evrk_code
         self.gpm_tax_rate = gpm_tax_rate
@@ -189,7 +190,8 @@ class Activity(Iterable):
 class Invoice(Iterable):
     _currency = None
 
-    def __init__(self, seller, buyer, activity, items, date, payment=None, currency=None, number=None):
+    def __init__(self, seller, buyer, activity, items, date, payment=None, currency=None,
+                 number=None):
         self.seller = seller
         self.buyer = buyer
         self.activity = activity
@@ -226,8 +228,7 @@ class Invoice(Iterable):
     def currency(self):
         if self._currency is None:
             return self.buyer.currency
-        else:
-            return self._currency
+        return self._currency
 
     @currency.setter
     def currency(self, currency):
@@ -271,12 +272,10 @@ class Invoice(Iterable):
     def payment_date(self):
         if not self.has_been_paid():
             return None
-        else:
-            if self.payment.date:
-                return self.payment.date
-            else:
-                # Assume the invoice date
-                return self.date
+        if self.payment.date:
+            return self.payment.date
+        # Assume the invoice date
+        return self.date
 
     def paid_amount(self):
         """Always returns amount in tax currency for the year."""
@@ -298,7 +297,8 @@ class Invoice(Iterable):
                 amount = Decimal(self.payment.amount)
             else:
                 if not self.payment.date:
-                    raise TypeError("When payment has been made in a custom currency, I need to know the payment date")
+                    raise TypeError("When payment has been made in a custom currency, I need to "
+                                    "know the payment date")
 
                 exchange_rate = lb_exchange_rate(
                     from_currency_code=self.payment.currency,
@@ -308,14 +308,16 @@ class Invoice(Iterable):
                 amount = Decimal(self.payment.amount) * exchange_rate
 
         if amount is not None:
-            amount = round_to_decimal_places(Decimal(amount), currency_decimal_places(self.currency))
+            amount = round_to_decimal_places(Decimal(amount),
+                                             currency_decimal_places(self.currency))
 
         return amount
 
 
 def from_list_enumerate(invoices_list):
     """
-    Returns dictionary with invoice number prefixes as keys and lists of invoices belonging to that prefix as values.
+    Returns dictionary with invoice number prefixes as keys and lists of invoices belonging to
+    that prefix as values.
     """
 
     invoices = defaultdict(list)
