@@ -26,7 +26,7 @@ from shaibos.util.log import get_logger
 logger = get_logger()
 
 
-def export_invoices_to_pdf(input_yaml, template, output_dir):
+def export_invoices_to_pdf(input_yaml, template, output_dir, overwrite):
     if not os.path.isdir(output_dir):
         os.makedirs(output_dir)
 
@@ -35,6 +35,10 @@ def export_invoices_to_pdf(input_yaml, template, output_dir):
     for invoice_number_prefix in invoices:
         for invoice in invoices[invoice_number_prefix]:
             output_pdf_path = os.path.join(output_dir, invoice.filename_prefix() + '.pdf')
+            if os.path.exists(output_pdf_path) and not overwrite:
+                logger.info('Skipping PDF invoice %s' % output_pdf_path)
+                continue
+
             save_pdf(invoice=invoice, template_path=template, output_path=output_pdf_path)
             logger.info('Saved PDF invoice %s' % output_pdf_path)
 
@@ -49,10 +53,13 @@ if __name__ == "__main__":
                         help='Jinja2 template for rendering the invoice (leave empty to use basic template)')
     parser.add_argument('-o', '--output_dir', type=str, required=False, default=fallback_pdf_export_path,
                         help='Output directory for PDF files (leave empty to write to %s)' % fallback_pdf_export_path)
+    parser.add_argument('--overwrite', default=False, action='store_true',
+                        help='Overwrites existing documents')
     args = parser.parse_args()
 
     logger.debug("Using input YAML file: %s" % args.input_yaml)
     logger.debug("Using Jinja2 template: %s" % args.template)
     logger.debug("Writing to output path: %s" % args.output_dir)
 
-    export_invoices_to_pdf(input_yaml=args.input_yaml, template=args.template, output_dir=args.output_dir)
+    export_invoices_to_pdf(input_yaml=args.input_yaml, template=args.template,
+                           output_dir=args.output_dir, overwrite=args.overwrite)
