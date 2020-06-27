@@ -275,41 +275,60 @@ class Invoice(Iterable):
         # Assume the invoice date
         return self.date
 
-    def paid_amount(self):
-        """Always returns amount in tax currency for the year."""
+    @property
+    def tax_currency(self):
+        return tax_currency(self.date.year)
 
-        amount = None
+    @property
+    def tax_currency_exchange_rate_issue(self):
+        if self.currency == self.tax_currency:
+            return Decimal("1")
+        return lb_exchange_rate(from_currency_code=self.currency,
+                                to_currency_code=self.tax_currency,
+                                date=self.date)
 
-        if not self.has_been_paid():
-            amount = None
-        if not self.payment.amount:
-            amount = self.total
-        if not bool(self.payment.currency):
-            raise TypeError("When payment amount is set, currency must be set too.")
-        if self.payment.amount:
+    @property
+    def tax_currency_exchange_rate_payment(self):
+        if self.currency == self.tax_currency:
+            return Decimal("1")
+        return lb_exchange_rate(from_currency_code=self.currency,
+                                to_currency_code=self.tax_currency,
+                                date=self.payment_date())
 
-            target_currency = tax_currency(self.payment.date.year)
+    @property
+    def total_in_tax_currency(self):
+        """ This is the number written on the invoice. It depends on the exchange rate on the day
+            of the issuance of the
+        """
+        if self.currency == self.tax_currency:
+            total = Decimal(self.total)
+        else:
+            total = Decimal(self.total) * self.tax_currency_exchange_rate_issue
 
-            if self.payment.currency == target_currency:
-                # Nothing to convert
-                amount = Decimal(self.payment.amount)
-            else:
-                if not self.payment.date:
-                    raise TypeError("When payment has been made in a custom currency, I need to "
-                                    "know the payment date")
+        return round_to_decimal_places(Decimal(total),
+                                       currency_decimal_places(self.currency))
 
-                exchange_rate = lb_exchange_rate(
-                    from_currency_code=self.payment.currency,
-                    to_currency_code=target_currency,
-                    date=self.payment.date
-                )
-                amount = Decimal(self.payment.amount) * exchange_rate
+    @property
+    def total_taxed_income(self):
+        """ Returns the income resulting from this invoice with regards to taxes.
 
-        if amount is not None:
-            amount = round_to_decimal_places(Decimal(amount),
-                                             currency_decimal_places(self.currency))
+            According to the tax commentary of 10th clause of the GPMI, the income is calculated
+            according to the official exchange rate at the time of the payment. Note that the tax
+            base is the amount listed on the invoice, not the received amount (otherwise the buyer
+            is not settling the invoice in full or paying extra money without an corresponding
+            accounting document).
 
-        return amount
+            The difference between the received amount and the amount in the invoice are handled
+            as regular expenses, regardless of whether they happen due to non-optimal exchange rate
+            by the bank or other bank fees.
+        """
+        if self.currency == self.tax_currency:
+            total = Decimal(self.total)
+        else:
+            total = Decimal(self.total) * self.tax_currency_exchange_rate_payment
+
+        return round_to_decimal_places(Decimal(total),
+                                       currency_decimal_places(self.currency))
 
 
 def from_list_enumerate(invoices_list):

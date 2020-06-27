@@ -133,21 +133,18 @@ class CalculatedTotals(AddedTotals):
 
 
 def invoice_totals(invoice, year):
-    year_tax_currency = tax_currency(year)
-
     if not invoice.has_been_paid():
         logger.warning("Invoice '%s' hasn't been marked as paid, skipping", invoice)
         return None
 
-    paid_year = invoice.payment_date()
-    if not paid_year.year == year:
+    paid_year = invoice.payment_date().year
+    if not paid_year == year:
         logger.warning("Invoice '%s' hasn't been paid in the year %d, skipping", invoice, year)
         return None
 
-    paid_amount = invoice.paid_amount()
     totals_per_invoice = CalculatedTotals(
-        income=paid_amount,
-        currency=year_tax_currency,
+        income=invoice.total_taxed_income,
+        currency=invoice.tax_currency,
         tax_rates=TaxRates.from_defaults(
             vsd_tax_percentage=invoice.seller.vsd_tax_rate,
             gpm_tax_percentage=invoice.activity.gpm_tax_rate

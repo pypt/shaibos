@@ -159,8 +159,6 @@ invoices:
       payment:
           paid: True
           date: 2015-04-03
-          amount: 100.99
-          currency: "GBP"
 
     # Paid later than 2015
     - date: 2015-12-31
@@ -216,16 +214,16 @@ invoices:
         # 29 * 199.99
         self.assertEqual(judaskinas.income, Decimal("5799.71"))
 
-        # (6 * 30.00) + (29 * 199.99) + (100.99 GBP / 0.73160)
-        self.assertEqual(saraskinas.income, Decimal("6117.75"))
+        # (6 * 30.00) + (29 * 199.99) + (6 * 30.00)
+        self.assertEqual(saraskinas.income, Decimal("6159.71"))
 
         # 5799.71 * 0.7 * 0.05
         self.assertEqual(judaskinas.gpm, Decimal("202.99"))
 
-        # ((6 * 30.00) + (100.99 GBP / 0.73160)) * 0.7 * 0.15
+        # (18 * 30.00) * 0.7 * 0.15
         # +
         # (29 * 199.99) * 0.7 * 0.05
-        self.assertEqual(saraskinas.gpm, Decimal("236.38"))
+        self.assertEqual(saraskinas.gpm, Decimal("240.79"))
 
     def test_activity_totals(self):
 
@@ -238,43 +236,43 @@ invoices:
         # (29 * 199.99) + (29 * 199.99)
         self.assertEqual(gpm_5_percent.income, Decimal("11599.42"))
 
-        # (6 * 30.00) + (100.99 GBP / 0.73160)
-        self.assertEqual(gpm_15_percent.income, Decimal("318.04"))
+        # (6 * 30.00) + (6 * 30.00)
+        self.assertEqual(gpm_15_percent.income, Decimal("360.00"))
 
         # 11599.42 * 0.7 * 0.05
         self.assertEqual(gpm_5_percent.gpm, Decimal("405.98"))
 
-        # 318.04 * 0.7 * 0.15
-        self.assertEqual(gpm_15_percent.gpm, Decimal("33.39"))
+        # 360.00 * 0.7 * 0.15
+        self.assertEqual(gpm_15_percent.gpm, Decimal("37.80"))
 
     def test_tax_totals(self):
 
         totals = tax_totals(invoices=self.test_invoices, year=self.test_invoices_year)
 
-        # 11599.42 + 318.04
-        self.assertEqual(totals.income, Decimal("11917.46"))
+        # 11599.42 + 360.00
+        self.assertEqual(totals.income, Decimal("11959.42"))
 
-        # (11599.42 * 0.3) + (318.04 * 0.3)
-        self.assertEqual(totals.expenses, Decimal("3575.24"))
+        # (11599.42 * 0.3) + (360.00 * 0.3)
+        self.assertEqual(totals.expenses, Decimal("3587.83"))
 
-        # (11599.42 - (11599.42 * 0.3)) + (318.04 - (318.04 * 0.3))
-        self.assertEqual(totals.tax_base, Decimal("8342.22"))
+        # (11599.42 * (1 - 0.3)) + (360.00 * (1 - 0.3))
+        self.assertEqual(totals.tax_base, Decimal("8371.59"))
 
-        # (11599.42 - (11599.42 * 0.3)) * 0.5 + (318.04 - ((318.04 * 0.3))) * 0.5
+        # ((11599.42 * (1 - 0.3)) + (360.00 * (1 - 0.3))) * 0.5
         # (expenses for each type is rounded)
-        self.assertEqual(totals.sodra_tax_base, Decimal("4171.12"))
+        self.assertEqual(totals.sodra_tax_base, Decimal("4185.80"))
 
-        # 4171.12 * 0.285
-        self.assertEqual(totals.vsd, Decimal("1188.77"))
+        # 4185.80 * 0.285
+        self.assertEqual(totals.vsd, Decimal("1192.95"))
 
-        # 4171.12 * 0.09
-        self.assertEqual(totals.psd, Decimal("375.40"))
+        # 4185.80 * 0.09
+        self.assertEqual(totals.psd, Decimal("376.72"))
 
-        # 405.98 + 33.39
-        self.assertEqual(totals.gpm, Decimal("439.37"))
+        # 405.98 + 37.80
+        self.assertEqual(totals.gpm, Decimal("443.78"))
 
-        # 1188.77 + 375.40 + 439.37
-        self.assertEqual(totals.tax, Decimal("2003.54"))
+        # 1192.95 + 376.72 + 443.78
+        self.assertEqual(totals.tax, Decimal("2013.45"))
 
-        # 11917.46 - 2003.54
-        self.assertEqual(totals.profit, Decimal("9913.92"))
+        # 11959.42 - 2013.45
+        self.assertEqual(totals.profit, Decimal("9945.97"))
