@@ -1,0 +1,2 @@
+Set SHAIBOS_TEST_LB_CURRENCY_WWW environmental variable to nonzero numeric
+value to enable currency tests that connect to the internet.

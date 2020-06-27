@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from dateutil import parser as dateparser
+import os
+import dateutil.parser
 import unittest
+from unittest import mock
+
+from parameterized import parameterized
 
 from shaibos.util.currency import amount_to_words
 from shaibos.util.currency import format_currency
 from shaibos.util.currency import lb_exchange_rate
+from shaibos.util.currency import lb_exchange_rate_download
+from shaibos.util.currency import lb_exchange_rate_parse
 from shaibos.util.currency import round_to_decimal_places
 from shaibos.util.currency import Decimal
 
@@ -253,58 +259,83 @@ class TestAmountToWords(unittest.TestCase):
                          u'twenty-nine US dollars and 99 ¢')
 
 
+def enable_www_tests():
+    setting = os.environ.get("SHAIBOS_TEST_LB_CURRENCY_WWW", None)
+    if setting is None or setting == "0":
+        return False
+    return True
+
+
+def get_exchange_data_dir():
+    return os.path.join(os.path.dirname(__file__), "currency_data")
+
+
+def get_reference_exchange_data(date_str):
+    path = os.path.join(get_exchange_data_dir(), "lb_{}_expected.xml".format(date_str))
+    with open(path, "rb") as reference_f:
+        return reference_f.read()
+
+
 # Reference rates: http://www.lb.lt/exchange/default.asp
 class TestLbExchangeRate(unittest.TestCase):
 
-    def test_lb_exchange_rate(self):
-        post_eurozone_date = dateparser.parse('2015-01-01')
-        pre_eurozone_date = dateparser.parse('2013-01-01')
+    @parameterized.expand([
+        ("2013-01-01"),
+        ("2015-01-01"),
+    ])
+    @unittest.skipIf(not enable_www_tests(), "Tests that make web requests have not been enabled")
+    def test_lb_exchange_rate_download(self, date_str):
+        date = dateutil.parser.parse(date_str)
 
-        # Known currency rates
-        self.assertEqual(lb_exchange_rate(from_currency_code='EUR',
-                                          to_currency_code='LTL',
-                                          date=post_eurozone_date),
-                         Decimal('3.4528'))
-        self.assertEqual(lb_exchange_rate(from_currency_code='LTL',
-                                          to_currency_code='EUR',
-                                          date=post_eurozone_date),
-                         Decimal('0.2896'))
+        content = lb_exchange_rate_download(date)
+        expected_content = get_reference_exchange_data(date_str)
+        result_path = os.path.join(get_exchange_data_dir(), "lb_{}_result.xml".format(date_str))
 
-        # Post-Eurozone rate
-        self.assertEqual(lb_exchange_rate(from_currency_code='EUR',
-                                          to_currency_code='GBP',
-                                          date=post_eurozone_date),
-                         Decimal('0.7789'))
-        self.assertTrue(str(lb_exchange_rate(from_currency_code='GBP',
-                                             to_currency_code='EUR',
-                                             date=post_eurozone_date)).startswith('1.2838618'))
+        if content != expected_content:
+            with open(result_path, 'wb') as result_f:
+                result_f.write(content)
 
-        # Pre-Eurozone rate
-        self.assertEqual(lb_exchange_rate(from_currency_code='GBP',
-                                          to_currency_code='LTL',
-                                          date=pre_eurozone_date),
-                         Decimal('4.2015'))
-        self.assertTrue(str(lb_exchange_rate(from_currency_code='LTL',
-                                             to_currency_code='GBP',
-                                             date=pre_eurozone_date)).startswith('0.2380102'))
+        self.assertEqual(content, expected_content, "The format of exchange rates has changed")
 
-        # Rounding errors
-        self.assertEqual(round_to_decimal_places(
-            number=(Decimal('416.00') * lb_exchange_rate(
-                from_currency_code='GBP',
-                to_currency_code='EUR',
-                date=dateparser.parse('2015-12-15')
-            )),
-            dec_places=2), Decimal('573.63'))
+    def test_lb_exchange_rate_known(self):
+        date = dateutil.parser.parse('2015-01-01')
 
-        # Unsupported currency
-        with self.assertRaises(Exception):
-            lb_exchange_rate('USD', 'GBP', post_eurozone_date)
+        with mock.patch("shaibos.util.currency.lb_exchange_rate_download",
+                        side_effect=Exception("Rates should not be downloaded")):
+            self.assertEqual(lb_exchange_rate('EUR', 'LTL',
+                                              date=date),
+                             Decimal('3.4528'))
+            self.assertEqual(lb_exchange_rate('LTL', 'EUR',
+                                              date=date),
+                             Decimal('0.2896'))
 
-        # Converting to LTL after Eurozone
-        with self.assertRaises(Exception):
-            lb_exchange_rate('GBP', 'LTL', post_eurozone_date)
+    def test_lb_post_eurozone_rates(self):
+        content = get_reference_exchange_data('2015-01-01')
 
-        # Converting to EUR before Eurozone
-        with self.assertRaises(Exception):
-            lb_exchange_rate('GBP', 'EUR', pre_eurozone_date)
+        self.assertEqual(lb_exchange_rate_parse('EUR', 'GBP', content), Decimal('0.7789'))
+        self.assertTrue(str(lb_exchange_rate_parse('GBP', 'EUR', content)
+                            ).startswith('1.2838618'))
+
+    def test_lb_pre_eurozone_rates(self):
+        content = get_reference_exchange_data('2013-01-01')
+
+        self.assertEqual(lb_exchange_rate_parse('GBP', 'LTL', content), Decimal('4.2015'))
+        self.assertTrue(str(lb_exchange_rate_parse('LTL', 'GBP', content)).startswith('0.2380102'))
+
+    def test_rounding(self):
+        rate = Decimal("1.378929950358521787093215665")  # GBP to EUR on 2015-12-15
+        self.assertEqual(round_to_decimal_places(number=(Decimal('416.00') * rate), dec_places=2),
+                         Decimal('573.63'))
+
+    @parameterized.expand([
+        ('USD', 'GBP', '2015-01-01'),  # Unsupported currency
+        ('GBP', 'LTL', '2015-01-01'),  # Converting to LTL after Eurozone
+        ('GBP', 'EUR', '2013-01-01'),  # converting to EUR before Eurozone
+    ])
+    def test_unsupported_currency(self, from_currency, to_currency, date_str):
+        date = dateutil.parser.parse(date_str)
+
+        with mock.patch("shaibos.util.currency.lb_exchange_rate_download",
+                        side_effect=Exception("Rates should not be downloaded")):
+            with self.assertRaisesRegex(Exception, r"Only conversions (from|to) / (to|from).*"):
+                lb_exchange_rate(from_currency, to_currency, date)
