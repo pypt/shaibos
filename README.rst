@@ -16,6 +16,16 @@ Paprastai tariant, jūs registruojate savo pajamas YAML faile, o
 kliento uždirbote per metus, taip pat parašo, kiek, kam (VMI, SoDrai) ir
 kokių mokesčių (GPM, PSD, VSD) reikia pervesti balandžio gale.
 
+Įrankis tinka šiais atvejais:
+
+ - išlaidomis pripažįstama 30% pajamų (nereikia saugoti išlaidas
+   pagrindžiančių dokumentų ir jų atvaizduoti žurnaluose)
+
+ - veiklos vykdytojas nėra PVM mokėtojas -- uždirbama mažiau kaip 45 tūkst. Eur pajamų per 12 mėnesių
+   iš Lietuvos klientų. Uždirbant didesnes sumas iš kitos ES šalyse esančių klientų gali tekti
+   registruotis PVM mokėtoju tose šalyse. Uždarbis iš klientų už ES ribų PVM atžvilgiu ribojimų
+   neturi.
+
 Savybės
 -------
 
@@ -183,9 +193,6 @@ Iliustruojamas sudėtingesnis atvejis, kuomet sąskaitos išrašomos keliomis ka
 To-Do
 -----
 
--  Pridėti `PVM
-   ribos <https://www.vmi.lt/cms/pridetines-vertes-mokestis>`__
-   palaikymą
 -  Pridėti `individualios veiklos pajamų
    "lubų" <http://www.veiklosmokesciai.lt/apie-individualia-veikla/individualios-veiklos-mokesciai/>`__
    palaikymą
