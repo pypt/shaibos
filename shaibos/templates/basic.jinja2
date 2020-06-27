@@ -153,6 +153,10 @@
             content: ")";
         }
 
+        .seller-right {
+            float: right;
+        }
+
         div.flat-list {
             display: block;
             float: left;
@@ -280,8 +284,8 @@
                             {% if language == 'lt_LT' %}Individualios veiklos pažymos registracijos nr:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Personal business ID:{% endif %}
 
-                            <strong>{{ seller.iea_certificate_number }}</strong>
                         {% endcall %}
+                        <strong class="seller-right">{{ seller.iea_certificate_number }}</strong>
                     </td>
                 </tr>
                 {% if seller.iea_certificate_issue_date %}
@@ -297,7 +301,7 @@
                             {% if language == 'en_GB' %}
                                 Personal business ID issue date:
                             {% endif %}
-                            <strong>{{ format_date(seller.iea_certificate_issue_date, language) }}</strong>
+                            <strong class="seller-right">{{ format_date(seller.iea_certificate_issue_date, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
@@ -307,18 +311,16 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Asmens kodas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Personal ID:{% endif %}
-
-                            <strong>{{ seller.personal_number }}</strong>
                         {% endcall %}
+                        <strong class="seller-right">{{ seller.personal_number }}</strong>
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <strong class="seller-right">{{ i18n_string(seller.address, language) }}</strong>
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Adresas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Address:{% endif %}
-
-                            <strong>{{ i18n_string(seller.address, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
@@ -329,8 +331,8 @@
                                 {% if language == 'lt_LT' %}Tel. nr.:{% endif %}
                                 {% if language == 'en_US' or language == 'en_GB' %}Phone:{% endif %}
 
-                                <strong>{{ i18n_string(seller.phone, language) }}</strong>
                             {% endcall %}
+                            <strong class="seller-right">{{ i18n_string(seller.phone, language) }}</strong>
                         </td>
                     </tr>
                 {% endif %}
@@ -351,9 +353,8 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}El. pašto adresas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Email:{% endif %}
-
-                            <strong>{{ seller.email }}</strong>
                         {% endcall %}
+                        <strong class="seller-right">{{ seller.email }}</strong>
                     </td>
                 </tr>
                 {% if seller.bank_credentials.account %}
@@ -416,18 +417,15 @@
             <table class="credentials-table">
                 <tr>
                     <td>
-                        {% call(language) i18n_block() %}
                             <strong>{{ i18n_string(buyer.name, language) }}</strong>
-                        {% endcall %}
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <strong class="seller-right">{{ i18n_string(buyer.address, language) }}</strong>
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Adresas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Address:{% endif %}
-
-                            <strong>{{ i18n_string(buyer.address, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
@@ -446,11 +444,10 @@
                 {% if buyer.company_code %}
                     <tr>
                         <td>
+                            <strong class="seller-right">{{ buyer.company_code }}</strong>
                             {% call(language) i18n_block() %}
                                 {% if language == 'lt_LT' %}Įmonės kodas:{% endif %}
                                 {% if language == 'en_US' or language == 'en_GB' %}Company code:{% endif %}
-
-                                <strong>{{ buyer.company_code }}</strong>
                             {% endcall %}
                         </td>
                     </tr>
