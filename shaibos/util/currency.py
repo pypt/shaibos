@@ -140,11 +140,10 @@ def __fractional_part(decimal_number):
     str_fraction = str(fraction)
     if str_fraction == "0":
         return 0
-    else:
-        zero_prefix = "0."
-        if not str_fraction.startswith(zero_prefix):
-            raise Exception("Unknown number format: %s" % str_fraction)
-        return int(str_fraction[len(zero_prefix):])
+    zero_prefix = "0."
+    if not str_fraction.startswith(zero_prefix):
+        raise Exception("Unknown number format: %s" % str_fraction)
+    return int(str_fraction[len(zero_prefix):])
 
 
 def amount_to_words(amount, currency, locale):
@@ -271,7 +270,7 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     if exchange_tax_currency == 'EUR':
         if from_currency_code == 'EUR' and to_currency_code == 'LTL':
             return Decimal('3.4528')
-        elif from_currency_code == 'LTL' and to_currency_code == 'EUR':
+        if from_currency_code == 'LTL' and to_currency_code == 'EUR':
             return Decimal('0.2896')
 
     response_content = lb_exchange_rate_download(date)
