@@ -60,9 +60,18 @@
             -webkit-print-color-adjust: exact;
         }
 
-        tr#total-row th {
+        tr#total-row th,
+        tr#total-eur-row th {
             background-color: inherit;
             text-align: right;
+        }
+
+        tr#total-eur-row th {
+            font-weight: normal;
+        }
+
+        .total-eur-exchange-rate {
+            font-size: 0.8em;
         }
 
         table#invoice,
@@ -97,6 +106,7 @@
 
         caption,
         th#subtotal-column-header,
+        tr#total-eur-row th,
         tr#total-row {
             text-transform: uppercase;
         }
@@ -217,15 +227,6 @@
         {{ string[language] }}
     {% else %}
         {{ string }}
-    {% endif %}
-{%- endmacro %}
-
-{# Invoice's currency #}
-{% macro invoice_currency() -%}
-    {% if currency %}
-        {{ caller(currency) }}
-    {% else %}
-        {{ caller(buyer.currency) }}
     {% endif %}
 {%- endmacro %}
 
@@ -585,29 +586,39 @@
             </td>
             <td>{{ item.quantity }}</td>
             <td class="amount">
-                {% call(currency) invoice_currency() %}
-                    {{ format_currency(item.price, currency, 'lt_LT') }}
-                {% endcall %}
+                {{ format_currency(item.price, currency, 'lt_LT') }}
             </td>
             <td class="amount">
-                {% call(currency) invoice_currency() %}
-                    {{ format_currency(item.subtotal, currency, 'lt_LT') }}
-                {% endcall %}
+                {{ format_currency(item.subtotal, currency, 'lt_LT') }}
             </td>
         </tr>
     {% endfor %}
 
+    {% if tax_currency != currency %}
+        <tr id="total-eur-row">
+            <th colspan="5">
+                {% call(language) i18n_block() %}
+                    {% if language == 'lt_LT' %}Viso {{ tax_currency }}:{% endif %}
+                    {% if language == 'en_US' or language == 'en_GB' %}Total {{ tax_currency }}:{% endif %}
+                {% endcall %}
+                <div class="total-eur-exchange-rate">
+                    (1 {{ currency }} = {{ round_to_decimal_places(tax_currency_exchange_rate_issue, 5) }} {{ tax_currency }})
+                </div>
+            </td>
+            <td class="amount">
+                {{ format_currency(total_in_tax_currency, tax_currency, 'lt_LT') }}
+            </td>
+        </tr>
+    {% endif %}
     <tr id="total-row">
         <th colspan="5">
             {% call(language) i18n_block() %}
-                {% if language == 'lt_LT' %}Viso:{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Total:{% endif %}
+                {% if language == 'lt_LT' %}Viso mokėti:{% endif %}
+                {% if language == 'en_US' or language == 'en_GB' %}Total due:{% endif %}
             {% endcall %}
         </th>
         <td class="amount">
-            {% call(currency) invoice_currency() %}
-                {{ format_currency(total, currency, 'lt_LT') }}
-            {% endcall %}
+            {{ format_currency(total, currency, 'lt_LT') }}
         </td>
     </tr>
 </table>

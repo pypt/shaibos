@@ -6,6 +6,7 @@ import tempfile
 from jinja2 import Environment
 
 from shaibos.util.currency import format_currency
+from shaibos.util.currency import round_to_decimal_places
 from shaibos.util.date import format_date
 
 
@@ -16,6 +17,7 @@ def render_html(invoice, template_path):
 
     env.globals.update(format_currency=format_currency)
     env.globals.update(format_date=format_date)
+    env.globals.update(round_to_decimal_places=round_to_decimal_places)
 
     return env.from_string(template).render(invoice)
 
