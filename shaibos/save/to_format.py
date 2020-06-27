@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from decimal import Decimal
 import os
 import tempfile
 import subprocess
@@ -20,6 +21,7 @@ def render_html(data, template_path):
     env.globals.update(format_currency=format_currency)
     env.globals.update(format_date=format_date)
     env.globals.update(round_to_decimal_places=round_to_decimal_places)
+    env.globals.update(Decimal=Decimal)
 
     return env.from_string(template).render(data)
 

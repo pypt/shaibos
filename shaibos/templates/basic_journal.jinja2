@@ -119,7 +119,7 @@
             {% if debug_exchange_rates %}
                 <br/>
                 <br/>
-                (1 {{ currency }} = {{ round_to_decimal_places(invoice.tax_currency_exchange_rate_issue, 5) }} {{ invoice.tax_currency }})
+                (1 {{ invoice.tax_currency }} = {{ round_to_decimal_places(Decimal("1.0") / invoice.tax_currency_exchange_rate_payment, 5) }} {{ invoice.currency }})
             {% endif %}
             </td>
             <td>{{ invoice.total_taxed_income }}</td>

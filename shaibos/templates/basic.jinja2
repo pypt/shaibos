@@ -602,7 +602,7 @@
                     {% if language == 'en_US' or language == 'en_GB' %}Total {{ tax_currency }}:{% endif %}
                 {% endcall %}
                 <div class="total-eur-exchange-rate">
-                    (1 {{ currency }} = {{ round_to_decimal_places(tax_currency_exchange_rate_issue, 5) }} {{ tax_currency }})
+                    (1 {{ tax_currency }} = {{ round_to_decimal_places(Decimal("1.0") / tax_currency_exchange_rate_issue, 5) }} {{ currency }})
                 </div>
             </td>
             <td class="amount">
