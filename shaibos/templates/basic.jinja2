@@ -524,7 +524,7 @@
         <th>
             {% call(language) i18n_block() %}
                 {% if language == 'lt_LT' %}Prekės pavadinimas{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Item name{% endif %}
+                {% if language == 'en_US' or language == 'en_GB' %}Description{% endif %}
             {% endcall %}
         </th>
         <th>
@@ -536,7 +536,7 @@
         <th>
             {% call(language) i18n_block() %}
                 {% if language == 'lt_LT' %}Kiekis{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Amount{% endif %}
+                {% if language == 'en_US' or language == 'en_GB' %}Quantity{% endif %}
             {% endcall %}
         </th>
         <th>
