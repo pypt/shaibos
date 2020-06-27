@@ -90,6 +90,19 @@ arba:
 
 Sugeneruoja visas sąskaitas iš YAML failo HTML arba PDF formatu.
 
+
+``shaibos-journal`` – pajamų-išlaidų žurnalo generavimas
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Naudojimas:
+
+::
+
+    shaibos-invoice --format=html --year=2020
+
+Suformuoja perskaitomus pajamų-išlaidų žurnalus visoms sukonfiguruotoms veikloms, turinčioms sąskaitų.
+
+
 ``shaibos-totals`` – per metus išrašytų sąskaitų suvestinė
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

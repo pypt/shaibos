@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Gyventojo individualios veiklos pajamų - išlaidų žurnalas
+    </title>
+    <style type="text/css" media="all">
+
+        @page {
+            size: A4 portrait;
+            counter-increment: page;
+            margin: 0;
+
+            @bottom-right {
+                padding-right: 1em;
+                content: counter(page) " / " counter(pages);
+            }
+        }
+
+        html, body {
+            /* A4 */
+            width: 210mm;
+            height: 297mm;
+
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+
+            font-family: "DejaVu Serif";
+        }
+
+        body {
+            padding: 2em;
+        }
+
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid;
+            padding: 0.2em 0.4em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: lightgray;
+
+            /* Print background color */
+            -webkit-print-color-adjust: exact;
+        }
+
+        #main-heading {
+            text-align: center;
+            margin: 1em 4em;
+            font-size: 2em;
+        }
+
+        .caption {
+            width: 100%;
+            border-bottom: 1px solid silver;
+            margin: 1em 0.5em 1em 0.5em;
+        }
+
+        .invoices td:nth-child(2) {
+            text-wrap: none;
+        }
+    </style>
+</head>
+
+<body>
+
+
+<h1 id="main-heading">Gyventojo individualios veiklos pajamų - išlaidų apskaitos žurnalas</h1>
+
+<div class="caption">Vardenis Pavardenis 38912010123</div>
+<div class="caption">Adreso g. 1-2, LT-12345 Vilnius</div>
+<div class="caption">620100 Kompiuterių programavimo veikla</div>
+
+<table id="invoices">
+    <tr>
+        <th>Eilės nr.</th>
+        <th>Data</th>
+        <th>Dokumento data, pavadinimas ir numeris</th>
+        <th>Operacijos turinys</th>
+        <th>Pajamų suma (eurais)</th>
+        <th>Išlaidos ir<br/>(arba) leidžiami atskaitymai</th>
+    </tr>
+        <tr>
+            <td>1</td>
+            <td>2015-04-03</td>
+            <td>
+                2015-03-31 sąskaita faktūra
+                Serija VVP Nr. 1
+            </td>
+            <td>Gaunamos pajamos už:
+                        Svetainės programavimo darbai.
+
+                
+            </td>
+            <td>180.00</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td colspan="6"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Viso:</td>
+            <td>180.00</td>
+            <td>0</td>
+        </tr>
+</table>
+</body>
+</html>
