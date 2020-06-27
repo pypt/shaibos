@@ -50,52 +50,45 @@ Savybės
 
     pip install git+https://github.com/pypt/shaibos.git
 
+PDF generavimui reikalingas ``chromium-browser``.
+
 Įrankiai
 --------
 
-``shaibos-html`` – HTML sąskaitų generavimas
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``shaibos-invoice`` – sąskaitų generavimas
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. figure:: docs/images/example-html.jpg
    :alt: 
 
-Naudojimas:
-
-::
-
-    shaibos-html
-
-arba:
-
-::
-
-    shaibos-html --input_yaml shaibos.yaml \
-                 --template shaibos/templates/basic.jinja2 \
-                 --output_dir invoices/html/
-
-Sugeneruoja visas sąskaitas iš YAML failo HTML formatu.
-
-``shaibos-pdf`` – PDF sąskaitų generavimas
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 .. figure:: docs/images/example-pdf.jpg
-   :alt: 
+   :alt:
 
 Naudojimas:
 
 ::
 
-    shaibos-pdf
+    shaibos-invoice
 
 arba:
 
 ::
 
-    shaibos-pdf --input_yaml shaibos.yaml \
-                --template shaibos/templates/basic.jinja2 \
-                --output_dir invoices/pdf/
+    shaibos-invoice --input_yaml shaibos.yaml \
+                    --template shaibos/templates/basic.jinja2 \
+                    --output_dir invoices/html/ \
+                    --format html
 
-Sugeneruoja visas sąskaitas iš YAML failo PDF formatu.
+arba:
+
+::
+
+    shaibos-invoice --input_yaml shaibos.yaml \
+                    --template shaibos/templates/basic.jinja2 \
+                    --output_dir invoices/html/ \
+                    --format pdf
+
+Sugeneruoja visas sąskaitas iš YAML failo HTML arba PDF formatu.
 
 ``shaibos-totals`` – per metus išrašytų sąskaitų suvestinė
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

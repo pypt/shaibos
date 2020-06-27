@@ -6,8 +6,8 @@
 # Norėdami išmėginti šį pavyzdį, įvykdykite:
 #
 #     cd shaibos/samples/2-lt-multiple-activities/
-#     ../../../bin/shaibos-html
-#     ../../../bin/shaibos-pdf
+#     ../../../bin/shaibos-invoice --format=html
+#     ../../../bin/shaibos-invoice --format=pdf
 #     ../../../bin/shaibos-totals --year 2015
 #     ../../../bin/shaibos-taxfiling --year 2015
 #

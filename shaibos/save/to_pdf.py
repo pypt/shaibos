@@ -17,7 +17,3 @@ def save_pdf(invoice, template_path, output_path):
                                    '--print-to-pdf=' + output_path, f.name])
         finally:
             os.remove(f.name)
-
-
-def default_pdf_export_path():
-    return "invoices/pdf/"

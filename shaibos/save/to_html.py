@@ -24,7 +24,3 @@ def save_html(invoice, template_path, output_path):
     html = render_html(invoice=invoice, template_path=template_path)
     with open(output_path, 'w', encoding='utf-8') as output_file:
         output_file.write(html)
-
-
-def default_html_export_path():
-    return "invoices/html/"
