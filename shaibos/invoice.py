@@ -141,28 +141,16 @@ class Buyer(Iterable):
 
 
 class Payment(Iterable):
-    def __init__(self, paid, date=None, amount=None, currency=None):
-
-        if currency is not None:
-            if amount is None:
-                raise Exception('Please define amount paid for invoice when custom currency is set')
-            if date is None:
-                raise Exception('Please define date when the invoice was paid when custom '
-                                'currency is set')
-
+    def __init__(self, paid, date=None):
         self.paid = paid
         self.date = date
-        self.amount = amount
-        self.currency = currency
 
     @classmethod
     def from_dictionary(cls, dictionary):
         if dictionary is None:
             return None
         return cls(paid=dictionary['paid'],
-                   date=dictionary.get('date', None),
-                   amount=dictionary.get('amount', None),
-                   currency=dictionary.get('currency', None))
+                   date=dictionary.get('date', None))
 
 
 class Activity(Iterable):
@@ -231,10 +219,6 @@ class Invoice(Iterable):
     @currency.setter
     def currency(self, currency):
         self._currency = currency
-
-        # Payment's default currency
-        if self.payment is not None and self.payment.currency is None:
-            self.payment.currency = self.currency
 
         for item in self.items:
             # Items will use this to round subtotals correctly
