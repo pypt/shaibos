@@ -407,13 +407,26 @@
                 </tr>
                 {% endif %}
                 {% if seller.bank_credentials.paypal_account %}
+                <tr>
                     <td>
-                    {% call(language) i18n_block() %}
-                        {% if language == 'lt_LT' %} Paypal sąskaita: {% endif %}
-                        {% if language == 'en_US' or language == 'en_GB' %} Paypal account: {% endif %}
-                        <strong>{{ seller.bank_credentials.paypal_account }}</strong>
-                    {% endcall %}
+                        <strong class="seller-right">{{ seller.bank_credentials.paypal_account }}</strong>
+                        {% call(language) i18n_block() %}
+                            {% if language == 'lt_LT' %} PayPal sąskaita: {% endif %}
+                            {% if language == 'en_US' or language == 'en_GB' %} PayPal account: {% endif %}
+                        {% endcall %}
                     </td>
+                </tr>
+                {% endif %}
+                {% if seller.bank_credentials.transferwise_account %}
+                <tr>
+                    <td>
+                        <strong class="seller-right">{{ seller.bank_credentials.transferwise_account }}</strong>
+                        {% call(language) i18n_block() %}
+                            {% if language == 'lt_LT' %} TransferWise sąskaita: {% endif %}
+                            {% if language == 'en_US' or language == 'en_GB' %} TransferWise account: {% endif %}
+                        {% endcall %}
+                        </td>
+                    </tr>
                 {% endif %}
             </table>
         </td>
