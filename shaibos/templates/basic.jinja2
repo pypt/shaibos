@@ -364,8 +364,10 @@
                         {% call(language) i18n_block() %}
 
                             {% if language == 'lt_LT' %}
-                                Atsiskaitomoji sąskaita: <strong>{{ seller.bank_credentials.account }}</strong><br/>
-                                Bankas: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% if seller.bank_credentials.account %}
+                                    Atsiskaitomoji sąskaita: <strong>{{ seller.bank_credentials.account }}</strong><br/>
+                                    Bankas: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% endif %}
                                 {% if buyer.correspondent_bank %}
                                     <br/>
                                     Banko SWIFT: <strong>{{ seller.bank_credentials.swift }}</strong><br/>
@@ -381,8 +383,10 @@
                             {% endif %}
 
                             {% if language == 'en_US' or language == 'en_GB' %}
-                                Bank account: <strong>{{ seller.bank_credentials.account }}</strong><br/>
-                                Bank name: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% if seller.bank_credentials.account %}
+                                    Bank account: <strong>{{ seller.bank_credentials.account }}</strong><br/>
+                                    Bank name: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% endif %}
                                 {% if buyer.correspondent_bank %}
                                     <br/>
                                     Bank SWIFT code: <strong>{{ seller.bank_credentials.swift }}</strong><br/>
