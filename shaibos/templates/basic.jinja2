@@ -172,7 +172,7 @@
         }
 
         div.flat-list {
-            display: block;
+            display: inline-block;
             float: left;
 
             /* Some space to signature line */
@@ -184,6 +184,11 @@
             overflow: hidden;
 
             border-bottom: 1px solid;
+        }
+
+        div.flat-list.signature-line {
+            margin-right: 0em;
+            float: none;
         }
 
         td.amount {
@@ -614,7 +619,7 @@
             {% if language == 'en_US' or language == 'en_GB' %}Amount in words{% endif %}
         {% endcall %}:
     </div>
-    <div class="signature-line">
+    <div class="flat-list signature-line">
         {% call(language) i18n_block() %}
             <strong>{{ total_in_words(language) }}</strong>
         {% endcall %}
