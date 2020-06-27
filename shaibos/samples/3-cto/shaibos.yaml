@@ -81,14 +81,12 @@ services:
     # Programavimo darbai; bus priskirti "kompiuteriu_programavimo_veikla"
     # veiklai ir 15% GPM tarifui
     - &programming
-        sku: 1
         description: 'Svetainės programavimo darbai.'
         measure: hour
         price: 30.00
     # Programinės įrangos pardavimas; bus priskirtas
     # "programines_irangos_pardaviams" veiklai ir 5% GPM tarifui
     - &software_sales
-        sku: 2
         description: 'Programinės įrangos pardavimas.'
         # Programinė įranga parduodama vienetais, ne valandomis
         measure: unit
@@ -97,7 +95,6 @@ services:
     # Serverių prieglobos veikla; bus priskirta "serveriu_priegloba" veiklai ir
     # 5% GPM tarifui
     - &hosting
-        sku: 3
         description: 'Serverių priegloba.'
         # Tarkime, kad serverių priegloba teikiama už fiksuotą kainą
         measure: unit

@@ -83,7 +83,6 @@ buyers:
 
 services:
     - &javascript_development
-        sku: 1
         # Dvikalbis paslaugos aprašymas
         description:
             lt_LT: 'Svetainės programavimo darbai.'

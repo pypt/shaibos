@@ -527,12 +527,6 @@
         </th>
         <th>
             {% call(language) i18n_block() %}
-                {% if language == 'lt_LT' %}Prekės kodas{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Item code{% endif %}
-            {% endcall %}
-        </th>
-        <th>
-            {% call(language) i18n_block() %}
                 {% if language == 'lt_LT' %}Prekės pavadinimas{% endif %}
                 {% if language == 'en_US' or language == 'en_GB' %}Item name{% endif %}
             {% endcall %}
@@ -565,7 +559,6 @@
     {% for item in items %}
         <tr>
             <td>{{ item.number }}</td>
-            <td>{{ item.sku }}</td>
             <td>
                 {% if item.description is string %}
                     {{ item.description }}
@@ -606,7 +599,7 @@
     {% endfor %}
 
     <tr id="total-row">
-        <th colspan="6">
+        <th colspan="5">
             {% call(language) i18n_block() %}
                 {% if language == 'lt_LT' %}Viso:{% endif %}
                 {% if language == 'en_US' or language == 'en_GB' %}Total:{% endif %}

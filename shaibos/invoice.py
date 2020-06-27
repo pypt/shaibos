@@ -38,8 +38,7 @@ class CorrespondentBank(Bank):
 
 
 class Item(Iterable):
-    def __init__(self, sku, description, measure, quantity, price, number=None):
-        self.sku = sku
+    def __init__(self, description, measure, quantity, price, number=None):
         self.description = description
         self.measure = measure
         self.quantity = quantity
@@ -53,14 +52,11 @@ class Item(Iterable):
     def from_dictionary(cls, dictionary):
         if dictionary is None:
             return None
-        return cls(
-            sku=dictionary['sku'],
-            description=dictionary['description'],
-            measure=dictionary['measure'],
-            quantity=dictionary['quantity'],
-            price=dictionary['price'],
-            number=dictionary.get('number', None),
-        )
+        return cls(description=dictionary['description'],
+                   measure=dictionary['measure'],
+                   quantity=dictionary['quantity'],
+                   price=dictionary['price'],
+                   number=dictionary.get('number', None))
 
     @property
     def subtotal(self):

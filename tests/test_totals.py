@@ -88,15 +88,12 @@ buyers:
 
 services:
     - &saraskinas_lt_programming
-        sku: 1
         description: 'Svetainės saraskinas.lt programavimo darbai.'
         measure: hour
     - &saraskinas_app_sales
-        sku: 1
         description: 'Programos „Šaraškinas“ pardavimas.'
         measure: unit
     - &judaskinas_app_sales
-        sku: 1
         description: 'Programos „Judaškinas“ pardavimas.'
         measure: unit
 

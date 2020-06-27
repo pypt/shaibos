@@ -85,8 +85,6 @@ buyers:
 # Prekės ir paslaugos
 services:
     - &web_development
-        # Prekės / paslaugos kodas
-        sku: 1
         # Paslaugos aprašymas
         description: 'Svetainės programavimo darbai.'
         # Sąskaitos matas; gali būti:
