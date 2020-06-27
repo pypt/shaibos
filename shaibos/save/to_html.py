@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import codecs
 import os
 import tempfile
 
@@ -11,7 +10,8 @@ from shaibos.util.date import format_date
 
 
 def render_html(invoice, template_path):
-    template = codecs.open(template_path, 'r', 'utf-8').read()
+    with open(template_path, 'r', encoding='utf-8') as template_f:
+        template = template_f.read()
 
     env = Environment(trim_blocks=True, lstrip_blocks=True)
 
@@ -24,7 +24,7 @@ def render_html(invoice, template_path):
 
 def save_html(invoice, template_path, output_path):
     html = render_html(invoice=invoice, template_path=template_path)
-    with codecs.open(output_path, 'wb', 'utf-8') as output_file:
+    with open(output_path, 'w', encoding='utf-8') as output_file:
         output_file.write(html)
 
 
