@@ -19,18 +19,5 @@ def save_pdf(invoice, template_path, output_path):
             os.remove(f.name)
 
 
-def save_pdf_tempdir(invoice, template_path):
-    temp_dir = tempfile.mkdtemp()
-
-    invoice_filename_prefix = 'invoice_%s%s' % (
-        invoice.seller.invoice_number_prefix.lower(),
-        invoice.padded_number
-    )
-    temp_pdf_file_path = os.path.join(temp_dir, invoice_filename_prefix + '.pdf')
-    save_pdf(invoice=invoice, template_path=template_path, output_path=temp_pdf_file_path)
-
-    return temp_pdf_file_path
-
-
 def default_pdf_export_path():
     return "invoices/pdf/"
