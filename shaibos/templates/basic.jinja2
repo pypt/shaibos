@@ -579,16 +579,12 @@
             <td>{{ item.quantity }}</td>
             <td class="amount">
                 {% call(currency) invoice_currency() %}
-                    {% call(language) i18n_block() %}
-                        {{ format_currency(item.price, currency, language) }}
-                    {% endcall %}
+                    {{ format_currency(item.price, currency, 'lt_LT') }}
                 {% endcall %}
             </td>
             <td class="amount">
                 {% call(currency) invoice_currency() %}
-                    {% call(language) i18n_block() %}
-                        {{ format_currency(item.subtotal, currency, language) }}
-                    {% endcall %}
+                    {{ format_currency(item.subtotal, currency, 'lt_LT') }}
                 {% endcall %}
             </td>
         </tr>
@@ -603,9 +599,7 @@
         </th>
         <td class="amount">
             {% call(currency) invoice_currency() %}
-                {% call(language) i18n_block() %}
-                    {{ format_currency(total, currency, language) }}
-                {% endcall %}
+                {{ format_currency(total, currency, 'lt_LT') }}
             {% endcall %}
         </td>
     </tr>
