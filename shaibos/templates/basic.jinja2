@@ -324,7 +324,6 @@
                             {% call(language) i18n_block() %}
                                 {% if language == 'lt_LT' %}Tel. nr.:{% endif %}
                                 {% if language == 'en_US' or language == 'en_GB' %}Phone:{% endif %}
-
                             {% endcall %}
                             <strong class="seller-right">{{ i18n_string(seller.phone, language) }}</strong>
                         </td>
@@ -372,7 +371,6 @@
                                     <strong>{{ buyer.correspondent_bank.swift }}</strong><br/>
                                     Banko korespondento „nostro“ sąskaita:
                                     <strong>{{ buyer.correspondent_bank.account }}</strong>
-
                                 {% endif %}
                             {% endif %}
 
@@ -391,10 +389,8 @@
                                     <strong>{{ buyer.correspondent_bank.swift }}</strong><br/>
                                     Correspondent bank's account:
                                     <strong>{{ buyer.correspondent_bank.account }}</strong>
-
                                 {% endif %}
                             {% endif %}
-
                         {% endcall %}
 
                     </td>
