@@ -145,9 +145,14 @@
             padding: 0;
         }
 
+        td.seller-multi-value-cell ul.i18n_block {
+            width: 100%;
+        }
+
         ul.i18n_block li {
             /* Line break */
             display: block;
+            padding: 0 0 0.1em 0;
         }
 
         div.flat-list ul li {
@@ -287,14 +292,13 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Individualios veiklos pažymos registracijos nr:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Personal business ID:{% endif %}
-
                         {% endcall %}
                         <strong class="seller-right">{{ seller.iea_certificate_number }}</strong>
                     </td>
                 </tr>
                 {% if seller.iea_certificate_issue_date %}
                 <tr>
-                    <td>
+                    <td class="seller-multi-value-cell">
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}
                                 Individualios veiklos išdavimo data:
@@ -618,7 +622,6 @@
         </td>
     </tr>
 </table>
-
 <div id="amount-in-words" class="bottom-credentials">
     <div class="flat-list">
         {% call(language) i18n_block() %}
