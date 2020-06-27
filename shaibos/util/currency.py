@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import functools
+import re
+
 import babel
 from decimal import Decimal, ROUND_HALF_UP
-
-import re
 
 import datetime
 import requests
@@ -235,6 +236,7 @@ def lb_exchange_rate_download(date):
     return response.content
 
 
+@functools.lru_cache(maxsize=None)
 def lb_exchange_rate(from_currency_code, to_currency_code, date):
     """
     Usage:
