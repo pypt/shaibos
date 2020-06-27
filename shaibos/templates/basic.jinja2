@@ -153,6 +153,12 @@
             content: ")";
         }
 
+        {% if buyer.languages|length > 1 %}
+        .lang-lt_LT {
+            font-size: 0.8em;
+        }
+        {% endif %}
+
         .seller-right {
             float: right;
         }
