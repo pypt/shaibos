@@ -7,12 +7,11 @@ import collections
 from shaibos.tax.rates import TaxRates
 from shaibos.util.currency import round_to_decimal_places, tax_currency, currency_decimal_places
 from shaibos.util.log import get_logger
-from shaibos.util.unicode_mixin import UnicodeMixin
 
 logger = get_logger()
 
 
-class AddedTotals(UnicodeMixin):
+class AddedTotals:
     """Basic counter of invoice totals."""
 
     currency = None
@@ -31,7 +30,7 @@ class AddedTotals(UnicodeMixin):
             raise Exception('Currency is undefined.')
         self.currency = currency
 
-    def __unicode__(self):
+    def __str__(self):
         descr_str = ""
         descr_str += "%(income)s %(currency)s; "
         descr_str += "expenses: %(expenses)s %(currency)s; "
@@ -75,7 +74,7 @@ class CalculatedTotals(AddedTotals):
     """Invoice totals counter that calculates appropriate taxes."""
 
     def __init__(self, income, currency, tax_rates):
-        super(CalculatedTotals, self).__init__(currency=currency)
+        super().__init__(currency=currency)
 
         decimal_places = currency_decimal_places(currency=self.currency)
 
@@ -165,7 +164,7 @@ def buyer_totals(invoices, year):
             if totals_per_invoice is None:
                 continue
 
-            totals_per_buyer[invoice.buyer.__unicode__()] += totals_per_invoice
+            totals_per_buyer[invoice.buyer.__str__()] += totals_per_invoice
 
     # Sort by buyer name
     totals_per_buyer = collections.OrderedDict(sorted(totals_per_buyer.items()))

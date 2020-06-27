@@ -34,7 +34,7 @@ class Bank(Iterable):
 class CorrespondentBank(Bank):
     def __init__(self, account, name, swift):
         """SWIFT is required in the correspondent bank."""
-        super(CorrespondentBank, self).__init__(account=account, name=name, swift=swift)
+        super().__init__(account=account, name=name, swift=swift)
 
 
 class Item(Iterable):
@@ -117,7 +117,7 @@ class Buyer(Iterable):
         self.currency = currency
         self.correspondent_bank = correspondent_bank
 
-    def __unicode__(self):
+    def __str__(self):
         if isinstance(self.name, dict):
             return self.name[self.default_locale]
         return self.name
@@ -245,7 +245,7 @@ class Invoice(Iterable):
             self.padded_number
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.filename_prefix()
 
     def has_been_paid(self):

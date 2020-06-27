@@ -30,7 +30,6 @@ setup(
         'License :: OSI Approved :: GNU Library or Lesser General Public License (LGPL)',
         'Natural Language :: Lithuanian',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Topic :: Office/Business :: Financial :: Accounting',
     ],

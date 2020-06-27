@@ -22,7 +22,7 @@ __decimal_places = {
 }
 
 
-class CurrencyStrings(object):
+class CurrencyStrings:
     def __init__(self, singular_nominative, plural_nominative, plural_genitive, subunit):
         self.singular_nominative = singular_nominative
         self.plural_nominative = plural_nominative
