@@ -45,9 +45,9 @@ setup(
         'shaibos': [
             'logging.conf',
             'templates/*.jinja2',
-            'samples/1-backenderis/shaibos.yaml',
-            'samples/2-frontenderis/shaibos.yaml',
-            'samples/3-cto/shaibos.yaml',
+            'samples/1-lt-simple/shaibos.yaml',
+            'samples/2-lt-multiple-activities/shaibos.yaml',
+            'samples/3-multiple-countries/shaibos.yaml',
         ],
     },
     include_package_data=True,

@@ -8,7 +8,7 @@ shaibos
 |Build Status| |Coverage Status|
 
 **shaibos** yra pajamų žurnalas, sąskaitų generatorius bei mokesčių
-skaičiuoklė, skirta kompiuterastams, vykdantiems `individualią veiklą
+skaičiuoklė, skirta kompiuteristams, vykdantiems `individualią veiklą
 pagal pažymą <https://www.vmi.lt/cms/web/kmdb/1.4.9>`__.
 
 Paprastai tariant, jūs registruojate savo pajamas YAML faile, o
@@ -49,9 +49,6 @@ Savybės
 ::
 
     pip install git+https://github.com/pypt/shaibos.git
-
-PDF sąskaitų generavimui reikės
-`wkhtmltopdf <http://wkhtmltopdf.org/downloads.html>`__.
 
 Įrankiai
 --------
@@ -149,54 +146,33 @@ Pajamų failas ``shaibos.yaml``
 Per metus iš individualios veiklos gautos pajamos surašomos YAML formatu
 į vieną failą.
 
-Kompiuterastai, jų poreikiai bei kantrybė yra skirtingi, todėl
+Kompiuteristai, jų poreikiai bei kantrybė yra skirtingi, todėl
 pateikiame tris šio pajamų failo pavyzdžius:
 
-Backenderis
-~~~~~~~~~~~
+Viena veikla Lietuvos ribose
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. figure:: docs/images/backenderis.jpg
-   :alt: 
+Iliustruojama nesudėtinga pajamų struktūra:
+vykdoma tik viena veikla, yra du klientai Lietuvoje, sąskaitos išrašomos vietine valiuta.
 
-Backenderis turi nesudėtingą pajamų struktūrą: užsiima tik programavimu,
-turi du klientus Lietuvoje, išrašinėja sąskaitas vietine valiuta.
+shaibos.yaml`` pavyzdys:
+`shaibos/samples/1-lt-simple/shaibos.yaml <shaibos/samples/1-lt-simple/shaibos.yaml>`__
 
-Pavyzdyje pademonstruojama paprasta išrašytų sąskaitų struktūra.
+Kelios veiklos Lietuvos ribose
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Pavyzdys:
-`shaibos/samples/1-backenderis/shaibos.yaml <shaibos/samples/1-backenderis/shaibos.yaml>`__
+Iliustruojamas atvejį, kai yra kelios veiklos Lietuvoje.
 
-Frontenderis
-~~~~~~~~~~~~
+``shaibos.yaml`` pavyzdys:
+`shaibos/samples/2-lt-multiple-activities/shaibos.yaml <shaibos/samples/2-lt-multiple-activities/shaibos.yaml>`__
 
-.. figure:: docs/images/frontenderis.jpg
-   :alt: 
+Veikla už Lietuvos ribų
+~~~~~~~~~~~~~~~~~~~~~~
 
-Frontenderis *Lietuvos webo profesionaluose* prisiskaitė, kad "Lietuvoj
-tai neuždirbsi", todėl suka varkes ne tik su vietiniais klientais, bet
-ir su amerikoniškais startupais.
+Iliustruojamas sudėtingesnis atvejis, kuomet sąskaitos išrašomos keliomis kalbomis ir užsienio valiuta.
 
-Pavyzdyje rodoma, kaip išrašyti sąskaitas keliomis kalbomis ir užsienio
-valiuta, automatiškai konvertuoti gautas pajamas į eurus (arba litus).
-
-Pavyzdys:
-`shaibos/samples/2-frontenderis/shaibos.yaml <shaibos/samples/2-frontenderis/shaibos.yaml>`__
-
-CTO
-~~~
-
-.. figure:: docs/images/cto.jpg
-   :alt: 
-
-CTO yra *Chief technology officer* tik LinkedIn'e, o iš tikrųjų dėl
-klientų nenoro specializuotis daro visokį velnią – ir paprogramina, ir
-serverius pareguliuoja, paprašytas ir palanges nuvalytų.
-
-Pavyzdyje aprašyta, kaip išrašyti sąskaitas už įvairias veiklas, kurioms
-taikomi skirtingi Gyventojų pajamų mokesčio (GPM) tarifai.
-
-Pavyzdys:
-`shaibos/samples/3-cto/shaibos.yaml <shaibos/samples/3-cto/shaibos.yaml>`__
+``shaibos.yaml`` pavyzdys:
+`shaibos/samples/3-multiple-countries/shaibos.yaml <shaibos/samples/3-multiple-countries/shaibos.yaml>`__
 
 To-Do
 -----
