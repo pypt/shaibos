@@ -136,12 +136,12 @@ def invoice_totals(invoice, year):
     year_tax_currency = tax_currency(year)
 
     if not invoice.has_been_paid():
-        logger.warn("Invoice '%s' hasn't been marked as paid, skipping", invoice)
+        logger.warning("Invoice '%s' hasn't been marked as paid, skipping", invoice)
         return None
 
     paid_year = invoice.payment_date()
     if not paid_year.year == year:
-        logger.warn("Invoice '%s' hasn't been paid in the year %d, skipping", invoice, year)
+        logger.warning("Invoice '%s' hasn't been paid in the year %d, skipping", invoice, year)
         return None
 
     paid_amount = invoice.paid_amount()
