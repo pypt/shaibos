@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -14,7 +14,11 @@ except ImportError:
     import shaibos  # noqa pylint: disable=unused-import
 
 from shaibos.load.from_yaml import load_invoices_from_yaml_file
-from shaibos.tax.totals import buyer_totals, gpm_percentages, activity_totals, tax_totals, invoice_totals
+from shaibos.tax.totals import activity_totals
+from shaibos.tax.totals import buyer_totals
+from shaibos.tax.totals import gpm_percentages
+from shaibos.tax.totals import invoice_totals
+from shaibos.tax.totals import tax_totals
 from shaibos.util.log import get_logger
 
 # ---
@@ -49,15 +53,17 @@ def year_totals(invoices, year):
     logger.info("TOTAL¹:")
     logger.info(" * %s", totals)
     logger.info("")
-    logger.info("¹ Might be different from the tax totals because expenses are counted for each activity separately.")
+    logger.info("¹ Might be different from the tax totals because expenses are counted "
+                "for each activity separately.")
     logger.info("")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Print tax filing information for invoices.')
-    parser.add_argument('-i', '--input_yaml', type=str, required=False, default='shaibos.yaml',
+    parser.add_argument('-i', '--input_yaml', type=str, default='shaibos.yaml',
                         help='YAML file with invoices (leave empty to use shaibos.yaml)')
-    parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print filing information')
+    parser.add_argument('-y', '--year', type=int, required=True,
+                        help='Year for which to print filing information')
     args = parser.parse_args()
 
     logger.debug("Using input YAML file: %s", args.input_yaml)

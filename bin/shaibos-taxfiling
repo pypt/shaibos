@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import argparse
@@ -45,7 +45,8 @@ def tax_filing(invoices, year):
         logger.info("  V7 (Leidžiamų atskaitymų suma): %2.2f %s",
                     activity_total.expenses, activity_total.currency)
         logger.info("  V9 (Atskaitoma ankstesnių mokestinių nuostolių suma): 0  # nebent tokių yra")
-        logger.info("  V17 (Atskaitymų požymis): 1  # 30 procentų gautų (uždirbtų) individualios veiklos pajamų")
+        logger.info("  V17 (Atskaitymų požymis): 1  # 30 procentų gautų (uždirbtų) "
+                    "individualios veiklos pajamų")
         logger.info("  V18 (Mokėtina VSDĮ ir PSDĮ suma): nepildyti")
         logger.info("  ")
 
@@ -81,9 +82,10 @@ def tax_filing(invoices, year):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Print invoice totals for the specified year.')
-    parser.add_argument('-i', '--input_yaml', type=str, required=False, default='shaibos.yaml',
+    parser.add_argument('-i', '--input_yaml', type=str, default='shaibos.yaml',
                         help='YAML file with invoices (leave empty to use shaibos.yaml)')
-    parser.add_argument('-y', '--year', type=int, required=True, help='Year for which to print invoice totals')
+    parser.add_argument('-y', '--year', type=int, required=True,
+                        help='Year for which to print invoice totals')
     args = parser.parse_args()
 
     logger.debug("Using input YAML file: %s", args.input_yaml)
