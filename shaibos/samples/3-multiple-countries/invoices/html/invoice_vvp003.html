@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        VVP
+        003
+    </title>
+    <style type="text/css" media="all">
+
+        @page {
+            size: A4 portrait;
+            counter-increment: page;
+            margin: 0;
+
+            @bottom-right {
+                padding-right: 1em;
+                content: counter(page) " / " counter(pages);
+            }
+        }
+
+        html, body {
+            /* A4 */
+            width: 210mm;
+            height: 297mm;
+
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+
+            font-family: "DejaVu Serif";
+        }
+
+        body {
+            padding: 2em;
+        }
+
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid;
+            padding: 0.2em 0.4em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: lightgray;
+
+            /* Print background color */
+            -webkit-print-color-adjust: exact;
+        }
+
+        tr#total-row th,
+        tr#total-eur-row th {
+            background-color: inherit;
+            text-align: right;
+        }
+
+        tr#total-eur-row th {
+            font-weight: normal;
+        }
+
+        .total-eur-exchange-rate {
+            font-size: 0.8em;
+        }
+
+        table#invoice,
+        table#credentials,
+        table#items {
+            width: 100%;
+        }
+
+        table#invoice tr td,
+        table#credentials tr td {
+            width: 50%;
+        }
+
+        table#items {
+            margin-bottom: 1em;
+        }
+
+        table.credentials-table {
+            border: none;
+        }
+
+        table.credentials-table tr td {
+            border: none;
+            border-bottom: 1px solid;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        table.credentials-table tr:last-child td {
+            border: none;
+        }
+
+        caption,
+        th#subtotal-column-header,
+        tr#total-eur-row th,
+        tr#total-row {
+            text-transform: uppercase;
+        }
+
+        caption,
+        div.bottom-credentials {
+            padding: 0.6em 0 0.2em 0;
+        }
+
+        caption,
+        tr#total-row {
+            font-weight: bold;
+        }
+
+        caption#invoice-caption {
+            font-size: x-large;
+        }
+
+        caption#credentials-caption,
+        caption#items-caption,
+        tr#total-row {
+            font-size: large;
+        }
+
+        td.credentials-column {
+            width: 50%;
+        }
+
+        td.credentials-column table.credentials-table {
+            width: 100%;
+        }
+
+        ul.i18n_block {
+            display: inline-block;
+            margin: 0;
+            padding: 0;
+        }
+
+        td.seller-multi-value-cell ul.i18n_block {
+            width: 100%;
+        }
+
+        ul.i18n_block li {
+            /* Line break */
+            display: block;
+            padding: 0 0 0.1em 0;
+        }
+
+        div.flat-list ul li {
+            /* No line break */
+            display: inline-block;
+        }
+
+        div.flat-list ul li:nth-child(2):before {
+            content: "(";
+        }
+
+        div.flat-list ul li:nth-child(n+2):after {
+            content: ",\0000a0";
+        }
+
+        div.flat-list ul li:not(:first-child):last-child:after {
+            content: ")";
+        }
+
+        .lang-lt_LT {
+            font-size: 0.8em;
+        }
+
+        .seller-right {
+            float: right;
+        }
+
+        div.flat-list {
+            display: inline-block;
+            float: left;
+
+            /* Some space to signature line */
+            margin-right: 0.5em;
+        }
+
+        div.signature-line {
+            display: block;
+            overflow: hidden;
+
+            border-bottom: 1px solid;
+        }
+
+        div.flat-list.signature-line {
+            margin-right: 0em;
+            float: none;
+        }
+
+        td.amount {
+            /* Never wrap amounts */
+            white-space: nowrap;
+        }
+
+    </style>
+</head>
+
+<body>
+
+
+
+
+<table id="invoice">
+    <caption id="invoice-caption">
+<ul class="i18n_block">
+            <li class="lang-en_US">Invoice</li>
+            <li class="lang-lt_LT">Sąskaita faktūra</li>
+    </ul>    </caption>
+    <tr>
+        <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">                    Invoice #:
+                    <strong>VVP003</strong>
+</li>
+            <li class="lang-lt_LT">                    Serija:
+                    <strong>VVP</strong>,
+                    Nr. <strong>003</strong>
+</li>
+    </ul>        </td>
+        <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">Date:                <strong>June 26, 2015</strong>
+</li>
+            <li class="lang-lt_LT">Išrašyta:                <strong>2015 m. birželio 26 d.</strong>
+</li>
+    </ul>        </td>
+    </tr>
+</table>
+&nbsp;
+<table id="credentials">
+    <tr>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">Seller:</li>
+            <li class="lang-lt_LT">Pardavėjas:</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">Buyer:</li>
+            <li class="lang-lt_LT">Pirkėjas:</li>
+    </ul>        </th>
+    </tr>
+    <tr>
+        <td class="credentials-column">
+            <table class="credentials-table">
+                <tr>
+                    <td>
+                        <strong>Vardenis Pavardenis</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">Personal business ID:</li>
+            <li class="lang-lt_LT">Individualios veiklos pažymos registracijos nr:</li>
+    </ul>                        <strong class="seller-right">123456</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="seller-multi-value-cell">
+<ul class="i18n_block">
+            <li class="lang-en_US">                                Personal business ID issue date:
+                            <strong class="seller-right">January 3, 2011</strong>
+</li>
+            <li class="lang-lt_LT">                                Individualios veiklos išdavimo data:
+                            <strong class="seller-right">2011 m. sausio 3 d.</strong>
+</li>
+    </ul>                    </td>
+                </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">Personal ID:</li>
+            <li class="lang-lt_LT">Asmens kodas:</li>
+    </ul>                        <strong class="seller-right">38912010123</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong class="seller-right">        Adreso st. 1-2, LT-12345 Vilnius
+</strong>
+<ul class="i18n_block">
+            <li class="lang-en_US">Address:</li>
+            <li class="lang-lt_LT">Adresas:</li>
+    </ul>                    </td>
+                </tr>
+                    <tr>
+                        <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">Phone:</li>
+            <li class="lang-lt_LT">Tel. nr.:</li>
+    </ul>                            <strong class="seller-right">        +37061212345
+</strong>
+                        </td>
+                    </tr>
+                <tr>
+                    <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">Email:</li>
+            <li class="lang-lt_LT">El. pašto adresas:</li>
+    </ul>                        <strong class="seller-right">pavardenis@example.com</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="bank-credentials">
+
+<ul class="i18n_block">
+            <li class="lang-en_US">
+
+                                    Bank account: <strong>LT627300010012345678</strong><br/>
+                                    Bank name: <strong>        Swedbank AB
+</strong>
+</li>
+            <li class="lang-lt_LT">
+                                    Atsiskaitomoji sąskaita: <strong>LT627300010012345678</strong><br/>
+                                    Bankas: <strong>        Swedbank AB
+</strong>
+
+</li>
+    </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong class="seller-right">pavardenis@example.com</strong>
+<ul class="i18n_block">
+            <li class="lang-en_US"> TransferWise account: </li>
+            <li class="lang-lt_LT"> TransferWise sąskaita: </li>
+    </ul>                        </td>
+                    </tr>
+            </table>
+        </td>
+        <td class="credentials-column">
+            <table class="credentials-table">
+                <tr>
+                    <td>
+                            <strong>        B Corporation
+</strong>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong class="seller-right">        20300 Example st.<br/> Seattle, WA 12345 USA
+</strong>
+<ul class="i18n_block">
+            <li class="lang-en_US">Address:</li>
+            <li class="lang-lt_LT">Adresas:</li>
+    </ul>                    </td>
+                </tr>
+                    <tr>
+                        <td>
+                            <strong class="seller-right">1234567891</strong>
+<ul class="i18n_block">
+            <li class="lang-en_US">Company code:</li>
+            <li class="lang-lt_LT">Įmonės kodas:</li>
+    </ul>                        </td>
+                    </tr>
+
+            </table>
+        </td>
+    </tr>
+</table>
+
+<table id="items">
+    <caption id="items-caption">
+<ul class="i18n_block">
+            <li class="lang-en_US">Items</li>
+            <li class="lang-lt_LT">Prekės</li>
+    </ul>    </caption>
+    <tr>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">#</li>
+            <li class="lang-lt_LT">Eil. nr.</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">Description</li>
+            <li class="lang-lt_LT">Prekės pavadinimas</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">Measure</li>
+            <li class="lang-lt_LT">Matas</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">Quantity</li>
+            <li class="lang-lt_LT">Kiekis</li>
+    </ul>        </th>
+        <th>
+<ul class="i18n_block">
+            <li class="lang-en_US">Item price</li>
+            <li class="lang-lt_LT">Vieneto kaina</li>
+    </ul>        </th>
+        <th id="subtotal-column-header">
+<ul class="i18n_block">
+            <li class="lang-en_US">Subtotal</li>
+            <li class="lang-lt_LT">Suma</li>
+    </ul>        </th>
+    </tr>
+        <tr>
+            <td>1</td>
+            <td>
+                    Software development services.
+            </td>
+            <td>
+<ul class="i18n_block">
+            <li class="lang-en_US">hour</li>
+            <li class="lang-lt_LT">val.</li>
+    </ul>            </td>
+            <td>10</td>
+            <td class="amount">
+                40,00 USD
+            </td>
+            <td class="amount">
+                400,00 USD
+            </td>
+        </tr>
+
+        <tr id="total-eur-row">
+            <th colspan="5">
+<ul class="i18n_block">
+            <li class="lang-en_US">Total EUR:</li>
+            <li class="lang-lt_LT">Viso EUR:</li>
+    </ul>                <div class="total-eur-exchange-rate">
+                    (1 EUR = 1.12020 USD)
+                </div>
+            </td>
+            <td class="amount">
+                357,08 €
+            </td>
+        </tr>
+    <tr id="total-row">
+        <th colspan="5">
+<ul class="i18n_block">
+            <li class="lang-en_US">Total due:</li>
+            <li class="lang-lt_LT">Viso mokėti:</li>
+    </ul>        </th>
+        <td class="amount">
+            400,00 USD
+        </td>
+    </tr>
+</table>
+<div id="amount-in-words" class="bottom-credentials">
+    <div class="flat-list">
+<ul class="i18n_block">
+            <li class="lang-en_US">Amount in words</li>
+            <li class="lang-lt_LT">Suma žodžiais</li>
+    </ul>:
+    </div>
+    <div class="flat-list signature-line">
+<ul class="i18n_block">
+            <li class="lang-en_US">            <strong>four hundred US dollars and 0 ¢</strong>
+</li>
+            <li class="lang-lt_LT">            <strong>keturi šimtai JAV dolerių ir 0 ¢</strong>
+</li>
+    </ul>        &nbsp;    </div>
+</div>
+
+<div id="issued-by" class="bottom-credentials">
+    <div class="flat-list">
+<ul class="i18n_block">
+            <li class="lang-en_US">Issued by</li>
+            <li class="lang-lt_LT">Sąskaitą išrašė</li>
+    </ul>:
+    </div>
+    <div class="signature-line">
+        Vardenis Pavardenis
+        &nbsp;    </div>
+</div>
+
+<div id="issued-to" class="bottom-credentials">
+    <div class="flat-list">
+<ul class="i18n_block">
+            <li class="lang-en_US">Issued to</li>
+            <li class="lang-lt_LT">Sąskaitą priėmė</li>
+    </ul>:
+    </div>
+    <div class="signature-line">
+        &nbsp;    </div>
+</div>
+
+</body>
+
+</html>

@@ -24,8 +24,11 @@
             width: 210mm;
             height: 297mm;
 
+            font-size: 10pt;
             margin: 0;
             padding: 0;
+
+            font-family: "DejaVu Serif";
         }
 
         body {
@@ -57,15 +60,29 @@
             -webkit-print-color-adjust: exact;
         }
 
-        tr#total-row th {
+        tr#total-row th,
+        tr#total-eur-row th {
             background-color: inherit;
             text-align: right;
+        }
+
+        tr#total-eur-row th {
+            font-weight: normal;
+        }
+
+        .total-eur-exchange-rate {
+            font-size: 0.8em;
         }
 
         table#invoice,
         table#credentials,
         table#items {
             width: 100%;
+        }
+
+        table#invoice tr td,
+        table#credentials tr td {
+            width: 50%;
         }
 
         table#items {
@@ -89,6 +106,7 @@
 
         caption,
         th#subtotal-column-header,
+        tr#total-eur-row th,
         tr#total-row {
             text-transform: uppercase;
         }
@@ -127,18 +145,19 @@
             padding: 0;
         }
 
+        td.seller-multi-value-cell ul.i18n_block {
+            width: 100%;
+        }
+
         ul.i18n_block li {
             /* Line break */
             display: block;
+            padding: 0 0 0.1em 0;
         }
 
         div.flat-list ul li {
             /* No line break */
             display: inline-block;
-        }
-
-        div.flat-list ul li:not(:first-child) {
-            text-transform: lowercase;
         }
 
         div.flat-list ul li:nth-child(2):before {
@@ -153,8 +172,18 @@
             content: ")";
         }
 
+        {% if buyer.languages|length > 1 %}
+        .lang-lt_LT {
+            font-size: 0.8em;
+        }
+        {% endif %}
+
+        .seller-right {
+            float: right;
+        }
+
         div.flat-list {
-            display: block;
+            display: inline-block;
             float: left;
 
             /* Some space to signature line */
@@ -168,10 +197,9 @@
             border-bottom: 1px solid;
         }
 
-        td.bank-credentials ul.i18n_block li:not(:last-child):after {
-            /* One extra line break between languages */
-            content: "\A\A";
-            white-space: pre;
+        div.flat-list.signature-line {
+            margin-right: 0em;
+            float: none;
         }
 
         td.amount {
@@ -200,15 +228,6 @@
         {{ string[language] }}
     {% else %}
         {{ string }}
-    {% endif %}
-{%- endmacro %}
-
-{# Invoice's currency #}
-{% macro invoice_currency() -%}
-    {% if currency %}
-        {{ caller(currency) }}
-    {% else %}
-        {{ caller(buyer.currency) }}
     {% endif %}
 {%- endmacro %}
 
@@ -244,14 +263,8 @@
         </td>
     </tr>
 </table>
-
+&nbsp;
 <table id="credentials">
-    <caption id="credentials-caption">
-        {% call(language) i18n_block() %}
-            {% if language == 'lt_LT' %}Rekvizitai{% endif %}
-            {% if language == 'en_US' or language == 'en_GB' %}Credentials{% endif %}
-        {% endcall %}
-    </caption>
     <tr>
         <th>
             {% call(language) i18n_block() %}
@@ -279,14 +292,13 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Individualios veiklos pažymos registracijos nr:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Personal business ID:{% endif %}
-
-                            <strong>{{ seller.iea_certificate_number }}</strong>
                         {% endcall %}
+                        <strong class="seller-right">{{ seller.iea_certificate_number }}</strong>
                     </td>
                 </tr>
                 {% if seller.iea_certificate_issue_date %}
                 <tr>
-                    <td>
+                    <td class="seller-multi-value-cell">
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}
                                 Individualios veiklos išdavimo data:
@@ -297,7 +309,7 @@
                             {% if language == 'en_GB' %}
                                 Personal business ID issue date:
                             {% endif %}
-                            <strong>{{ format_date(seller.iea_certificate_issue_date, language) }}</strong>
+                            <strong class="seller-right">{{ format_date(seller.iea_certificate_issue_date, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
@@ -307,18 +319,16 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Asmens kodas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Personal ID:{% endif %}
-
-                            <strong>{{ seller.personal_number }}</strong>
                         {% endcall %}
+                        <strong class="seller-right">{{ seller.personal_number }}</strong>
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <strong class="seller-right">{{ i18n_string(seller.address, language) }}</strong>
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Adresas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Address:{% endif %}
-
-                            <strong>{{ i18n_string(seller.address, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
@@ -328,9 +338,8 @@
                             {% call(language) i18n_block() %}
                                 {% if language == 'lt_LT' %}Tel. nr.:{% endif %}
                                 {% if language == 'en_US' or language == 'en_GB' %}Phone:{% endif %}
-
-                                <strong>{{ i18n_string(seller.phone, language) }}</strong>
                             {% endcall %}
+                            <strong class="seller-right">{{ i18n_string(seller.phone, language) }}</strong>
                         </td>
                     </tr>
                 {% endif %}
@@ -351,9 +360,8 @@
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}El. pašto adresas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Email:{% endif %}
-
-                            <strong>{{ seller.email }}</strong>
                         {% endcall %}
+                        <strong class="seller-right">{{ seller.email }}</strong>
                     </td>
                 </tr>
                 {% if seller.bank_credentials.account %}
@@ -363,8 +371,10 @@
                         {% call(language) i18n_block() %}
 
                             {% if language == 'lt_LT' %}
-                                Atsiskaitomoji sąskaita: <strong>{{ seller.bank_credentials.account }}</strong><br/>
-                                Bankas: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% if seller.bank_credentials.account %}
+                                    Atsiskaitomoji sąskaita: <strong>{{ seller.bank_credentials.account }}</strong><br/>
+                                    Bankas: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% endif %}
                                 {% if buyer.correspondent_bank %}
                                     <br/>
                                     Banko SWIFT: <strong>{{ seller.bank_credentials.swift }}</strong><br/>
@@ -375,13 +385,14 @@
                                     <strong>{{ buyer.correspondent_bank.swift }}</strong><br/>
                                     Banko korespondento „nostro“ sąskaita:
                                     <strong>{{ buyer.correspondent_bank.account }}</strong>
-
                                 {% endif %}
                             {% endif %}
 
                             {% if language == 'en_US' or language == 'en_GB' %}
-                                Bank account: <strong>{{ seller.bank_credentials.account }}</strong><br/>
-                                Bank name: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% if seller.bank_credentials.account %}
+                                    Bank account: <strong>{{ seller.bank_credentials.account }}</strong><br/>
+                                    Bank name: <strong>{{ i18n_string(seller.bank_credentials.name, language) }}</strong>
+                                {% endif %}
                                 {% if buyer.correspondent_bank %}
                                     <br/>
                                     Bank SWIFT code: <strong>{{ seller.bank_credentials.swift }}</strong><br/>
@@ -392,23 +403,34 @@
                                     <strong>{{ buyer.correspondent_bank.swift }}</strong><br/>
                                     Correspondent bank's account:
                                     <strong>{{ buyer.correspondent_bank.account }}</strong>
-
                                 {% endif %}
                             {% endif %}
-
                         {% endcall %}
 
                     </td>
                 </tr>
                 {% endif %}
                 {% if seller.bank_credentials.paypal_account %}
+                <tr>
                     <td>
-                    {% call(language) i18n_block() %}
-                        {% if language == 'lt_LT' %} Paypal sąskaita: {% endif %}
-                        {% if language == 'en_US' or language == 'en_GB' %} Paypal account: {% endif %}
-                        <strong>{{ seller.bank_credentials.paypal_account }}</strong>
-                    {% endcall %}
+                        <strong class="seller-right">{{ seller.bank_credentials.paypal_account }}</strong>
+                        {% call(language) i18n_block() %}
+                            {% if language == 'lt_LT' %} PayPal sąskaita: {% endif %}
+                            {% if language == 'en_US' or language == 'en_GB' %} PayPal account: {% endif %}
+                        {% endcall %}
                     </td>
+                </tr>
+                {% endif %}
+                {% if seller.bank_credentials.transferwise_account %}
+                <tr>
+                    <td>
+                        <strong class="seller-right">{{ seller.bank_credentials.transferwise_account }}</strong>
+                        {% call(language) i18n_block() %}
+                            {% if language == 'lt_LT' %} TransferWise sąskaita: {% endif %}
+                            {% if language == 'en_US' or language == 'en_GB' %} TransferWise account: {% endif %}
+                        {% endcall %}
+                        </td>
+                    </tr>
                 {% endif %}
             </table>
         </td>
@@ -416,18 +438,15 @@
             <table class="credentials-table">
                 <tr>
                     <td>
-                        {% call(language) i18n_block() %}
                             <strong>{{ i18n_string(buyer.name, language) }}</strong>
-                        {% endcall %}
                     </td>
                 </tr>
                 <tr>
                     <td>
+                        <strong class="seller-right">{{ i18n_string(buyer.address, language) }}</strong>
                         {% call(language) i18n_block() %}
                             {% if language == 'lt_LT' %}Adresas:{% endif %}
                             {% if language == 'en_US' or language == 'en_GB' %}Address:{% endif %}
-
-                            <strong>{{ i18n_string(buyer.address, language) }}</strong>
                         {% endcall %}
                     </td>
                 </tr>
@@ -446,11 +465,10 @@
                 {% if buyer.company_code %}
                     <tr>
                         <td>
+                            <strong class="seller-right">{{ buyer.company_code }}</strong>
                             {% call(language) i18n_block() %}
                                 {% if language == 'lt_LT' %}Įmonės kodas:{% endif %}
                                 {% if language == 'en_US' or language == 'en_GB' %}Company code:{% endif %}
-
-                                <strong>{{ buyer.company_code }}</strong>
                             {% endcall %}
                         </td>
                     </tr>
@@ -513,14 +531,8 @@
         </th>
         <th>
             {% call(language) i18n_block() %}
-                {% if language == 'lt_LT' %}Prekės kodas{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Item code{% endif %}
-            {% endcall %}
-        </th>
-        <th>
-            {% call(language) i18n_block() %}
                 {% if language == 'lt_LT' %}Prekės pavadinimas{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Item name{% endif %}
+                {% if language == 'en_US' or language == 'en_GB' %}Description{% endif %}
             {% endcall %}
         </th>
         <th>
@@ -532,7 +544,7 @@
         <th>
             {% call(language) i18n_block() %}
                 {% if language == 'lt_LT' %}Kiekis{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Amount{% endif %}
+                {% if language == 'en_US' or language == 'en_GB' %}Quantity{% endif %}
             {% endcall %}
         </th>
         <th>
@@ -551,7 +563,6 @@
     {% for item in items %}
         <tr>
             <td>{{ item.number }}</td>
-            <td>{{ item.sku }}</td>
             <td>
                 {% if item.description is string %}
                     {{ item.description }}
@@ -575,39 +586,42 @@
             </td>
             <td>{{ item.quantity }}</td>
             <td class="amount">
-                {% call(currency) invoice_currency() %}
-                    {% call(language) i18n_block() %}
-                        {{ format_currency(item.price, currency, language) }}
-                    {% endcall %}
-                {% endcall %}
+                {{ format_currency(item.price, currency, 'lt_LT') }}
             </td>
             <td class="amount">
-                {% call(currency) invoice_currency() %}
-                    {% call(language) i18n_block() %}
-                        {{ format_currency(item.subtotal, currency, language) }}
-                    {% endcall %}
-                {% endcall %}
+                {{ format_currency(item.subtotal, currency, 'lt_LT') }}
             </td>
         </tr>
     {% endfor %}
 
+    {% if tax_currency != currency %}
+        <tr id="total-eur-row">
+            <th colspan="5">
+                {% call(language) i18n_block() %}
+                    {% if language == 'lt_LT' %}Viso {{ tax_currency }}:{% endif %}
+                    {% if language == 'en_US' or language == 'en_GB' %}Total {{ tax_currency }}:{% endif %}
+                {% endcall %}
+                <div class="total-eur-exchange-rate">
+                    (1 {{ tax_currency }} = {{ round_to_decimal_places(Decimal("1.0") / tax_currency_exchange_rate_issue, 5) }} {{ currency }})
+                </div>
+            </td>
+            <td class="amount">
+                {{ format_currency(total_in_tax_currency, tax_currency, 'lt_LT') }}
+            </td>
+        </tr>
+    {% endif %}
     <tr id="total-row">
-        <th colspan="6">
+        <th colspan="5">
             {% call(language) i18n_block() %}
-                {% if language == 'lt_LT' %}Viso:{% endif %}
-                {% if language == 'en_US' or language == 'en_GB' %}Total:{% endif %}
+                {% if language == 'lt_LT' %}Viso mokėti:{% endif %}
+                {% if language == 'en_US' or language == 'en_GB' %}Total due:{% endif %}
             {% endcall %}
         </th>
         <td class="amount">
-            {% call(currency) invoice_currency() %}
-                {% call(language) i18n_block() %}
-                    {{ format_currency(total, currency, language) }}
-                {% endcall %}
-            {% endcall %}
+            {{ format_currency(total, currency, 'lt_LT') }}
         </td>
     </tr>
 </table>
-
 <div id="amount-in-words" class="bottom-credentials">
     <div class="flat-list">
         {% call(language) i18n_block() %}
@@ -615,7 +629,7 @@
             {% if language == 'en_US' or language == 'en_GB' %}Amount in words{% endif %}
         {% endcall %}:
     </div>
-    <div class="signature-line">
+    <div class="flat-list signature-line">
         {% call(language) i18n_block() %}
             <strong>{{ total_in_words(language) }}</strong>
         {% endcall %}

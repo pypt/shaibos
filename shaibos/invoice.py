@@ -12,10 +12,11 @@ from shaibos.util.iterable import Iterable
 
 
 class Bank(Iterable):
-    def __init__(self, account=None, paypal_account=None, name=None,
+    def __init__(self, account=None, paypal_account=None, transferwise_account=None, name=None,
                  swift=None):
         self.account = account
         self.paypal_account = paypal_account
+        self.transferwise_account = transferwise_account
         self.name = name
         self.swift = swift
 
@@ -25,6 +26,7 @@ class Bank(Iterable):
             return None
         return cls(account=dictionary.get('account', None),
                    paypal_account=dictionary.get('paypal_account', None),
+                   transferwise_account=dictionary.get('transferwise_account', None),
                    name=dictionary.get('name', None),
                    swift=dictionary.get('swift', None))
 
@@ -32,12 +34,11 @@ class Bank(Iterable):
 class CorrespondentBank(Bank):
     def __init__(self, account, name, swift):
         """SWIFT is required in the correspondent bank."""
-        super(CorrespondentBank, self).__init__(account=account, name=name, swift=swift)
+        super().__init__(account=account, name=name, swift=swift)
 
 
 class Item(Iterable):
-    def __init__(self, sku, description, measure, quantity, price, number=None):
-        self.sku = sku
+    def __init__(self, description, measure, quantity, price, number=None):
         self.description = description
         self.measure = measure
         self.quantity = quantity
@@ -51,14 +52,11 @@ class Item(Iterable):
     def from_dictionary(cls, dictionary):
         if dictionary is None:
             return None
-        return cls(
-            sku=dictionary['sku'],
-            description=dictionary['description'],
-            measure=dictionary['measure'],
-            quantity=dictionary['quantity'],
-            price=dictionary['price'],
-            number=dictionary.get('number', None),
-        )
+        return cls(description=dictionary['description'],
+                   measure=dictionary['measure'],
+                   quantity=dictionary['quantity'],
+                   price=dictionary['price'],
+                   number=dictionary.get('number', None))
 
     @property
     def subtotal(self):
@@ -119,7 +117,7 @@ class Buyer(Iterable):
         self.currency = currency
         self.correspondent_bank = correspondent_bank
 
-    def __unicode__(self):
+    def __str__(self):
         if isinstance(self.name, dict):
             return self.name[self.default_locale]
         return self.name
@@ -143,28 +141,16 @@ class Buyer(Iterable):
 
 
 class Payment(Iterable):
-    def __init__(self, paid, date=None, amount=None, currency=None):
-
-        if currency is not None:
-            if amount is None:
-                raise Exception('Please define amount paid for invoice when custom currency is set')
-            if date is None:
-                raise Exception('Please define date when the invoice was paid when custom '
-                                'currency is set')
-
+    def __init__(self, paid, date=None):
         self.paid = paid
         self.date = date
-        self.amount = amount
-        self.currency = currency
 
     @classmethod
     def from_dictionary(cls, dictionary):
         if dictionary is None:
             return None
         return cls(paid=dictionary['paid'],
-                   date=dictionary.get('date', None),
-                   amount=dictionary.get('amount', None),
-                   currency=dictionary.get('currency', None))
+                   date=dictionary.get('date', None))
 
 
 class Activity(Iterable):
@@ -234,10 +220,6 @@ class Invoice(Iterable):
     def currency(self, currency):
         self._currency = currency
 
-        # Payment's default currency
-        if self.payment is not None and self.payment.currency is None:
-            self.payment.currency = self.currency
-
         for item in self.items:
             # Items will use this to round subtotals correctly
             # (uses getter above which might return buyer's currency)
@@ -263,7 +245,7 @@ class Invoice(Iterable):
             self.padded_number
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.filename_prefix()
 
     def has_been_paid(self):
@@ -277,41 +259,60 @@ class Invoice(Iterable):
         # Assume the invoice date
         return self.date
 
-    def paid_amount(self):
-        """Always returns amount in tax currency for the year."""
+    @property
+    def tax_currency(self):
+        return tax_currency(self.date.year)
 
-        amount = None
+    @property
+    def tax_currency_exchange_rate_issue(self):
+        if self.currency == self.tax_currency:
+            return Decimal("1")
+        return lb_exchange_rate(from_currency_code=self.currency,
+                                to_currency_code=self.tax_currency,
+                                date=self.date)
 
-        if not self.has_been_paid():
-            amount = None
-        if not self.payment.amount:
-            amount = self.total
-        if not bool(self.payment.currency):
-            raise TypeError("When payment amount is set, currency must be set too.")
-        if self.payment.amount:
+    @property
+    def tax_currency_exchange_rate_payment(self):
+        if self.currency == self.tax_currency:
+            return Decimal("1")
+        return lb_exchange_rate(from_currency_code=self.currency,
+                                to_currency_code=self.tax_currency,
+                                date=self.payment_date())
 
-            target_currency = tax_currency(self.payment.date.year)
+    @property
+    def total_in_tax_currency(self):
+        """ This is the number written on the invoice. It depends on the exchange rate on the day
+            of the issuance of the
+        """
+        if self.currency == self.tax_currency:
+            total = Decimal(self.total)
+        else:
+            total = Decimal(self.total) * self.tax_currency_exchange_rate_issue
 
-            if self.payment.currency == target_currency:
-                # Nothing to convert
-                amount = Decimal(self.payment.amount)
-            else:
-                if not self.payment.date:
-                    raise TypeError("When payment has been made in a custom currency, I need to "
-                                    "know the payment date")
+        return round_to_decimal_places(Decimal(total),
+                                       currency_decimal_places(self.currency))
 
-                exchange_rate = lb_exchange_rate(
-                    from_currency_code=self.payment.currency,
-                    to_currency_code=target_currency,
-                    date=self.payment.date
-                )
-                amount = Decimal(self.payment.amount) * exchange_rate
+    @property
+    def total_taxed_income(self):
+        """ Returns the income resulting from this invoice with regards to taxes.
 
-        if amount is not None:
-            amount = round_to_decimal_places(Decimal(amount),
-                                             currency_decimal_places(self.currency))
+            According to the tax commentary of 10th clause of the GPMI, the income is calculated
+            according to the official exchange rate at the time of the payment. Note that the tax
+            base is the amount listed on the invoice, not the received amount (otherwise the buyer
+            is not settling the invoice in full or paying extra money without an corresponding
+            accounting document).
 
-        return amount
+            The difference between the received amount and the amount in the invoice are handled
+            as regular expenses, regardless of whether they happen due to non-optimal exchange rate
+            by the bank or other bank fees.
+        """
+        if self.currency == self.tax_currency:
+            total = Decimal(self.total)
+        else:
+            total = Decimal(self.total) * self.tax_currency_exchange_rate_payment
+
+        return round_to_decimal_places(Decimal(total),
+                                       currency_decimal_places(self.currency))
 
 
 def from_list_enumerate(invoices_list):

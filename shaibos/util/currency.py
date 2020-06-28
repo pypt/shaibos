@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+import functools
+import re
+
 import babel
 from decimal import Decimal, ROUND_HALF_UP
-
-import re
 
 import datetime
 import requests
@@ -21,7 +22,7 @@ __decimal_places = {
 }
 
 
-class CurrencyStrings(object):
+class CurrencyStrings:
     def __init__(self, singular_nominative, plural_nominative, plural_genitive, subunit):
         self.singular_nominative = singular_nominative
         self.plural_nominative = plural_nominative
@@ -139,11 +140,10 @@ def __fractional_part(decimal_number):
     str_fraction = str(fraction)
     if str_fraction == "0":
         return 0
-    else:
-        zero_prefix = "0."
-        if not str_fraction.startswith(zero_prefix):
-            raise Exception("Unknown number format: %s" % str_fraction)
-        return int(str_fraction[len(zero_prefix):])
+    zero_prefix = "0."
+    if not str_fraction.startswith(zero_prefix):
+        raise Exception("Unknown number format: %s" % str_fraction)
+    return int(str_fraction[len(zero_prefix):])
 
 
 def amount_to_words(amount, currency, locale):
@@ -187,6 +187,55 @@ def round_to_decimal_places(number, dec_places):
     return Decimal(number.quantize(Decimal('.' + '0' * dec_places), rounding=ROUND_HALF_UP))
 
 
+def lb_exchange_rate_parse(from_currency_code, to_currency_code, response_content):
+    response_xml = etree.fromstring(response_content)
+    namespaces = {'lb': response_xml.nsmap[None]}
+    if not response_xml.tag.endswith("FxRates"):
+        raise Exception("Invalid response, root element is not 'FxRates'")
+
+    rate = None
+    for currency_rates in response_xml.xpath('/lb:FxRates/lb:FxRate', namespaces=namespaces):
+        currencies = currency_rates.xpath('lb:CcyAmt', namespaces=namespaces)
+        if len(currencies) != 2:
+            raise Exception('Only two currencies per listing are expected')
+
+        first_currency = currencies[0].xpath('lb:Ccy', namespaces=namespaces)[0].text
+        first_amount = Decimal(currencies[0].xpath('lb:Amt', namespaces=namespaces)[0].text)
+        second_currency = currencies[1].xpath('lb:Ccy', namespaces=namespaces)[0].text
+        second_amount = Decimal(currencies[1].xpath('lb:Amt', namespaces=namespaces)[0].text)
+
+        if first_currency == from_currency_code and second_currency == to_currency_code:
+            rate = second_amount / first_amount
+        elif first_currency == to_currency_code and second_currency == from_currency_code:
+            rate = first_amount / second_amount
+
+        if rate:
+            break
+
+    if rate is None:
+        raise Exception("Currency rate between {} and {} was not found".format(from_currency_code,
+                                                                               to_currency_code))
+
+    return rate
+
+
+def lb_exchange_rate_download(date):
+    # note that we may get data for a different date than `date` if currency exchange rates were
+    # not published on `date`. This happens on e.g. 2015-01-01.
+
+    exchange_tax_currency = tax_currency(date.year)
+
+    # API supports SOAP but there's no decent SOAP client library for Python at the moment
+    lb_currency_rates_api_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx/getFxRates"
+    response = requests.get(lb_currency_rates_api_endpoint, params={
+        'tp': 'LT' if exchange_tax_currency == 'LTL' else 'EU',
+        'dt': date.isoformat(),
+    })
+
+    return response.content
+
+
+@functools.lru_cache(maxsize=None)
 def lb_exchange_rate(from_currency_code, to_currency_code, date):
     """
     Usage:
@@ -221,42 +270,9 @@ def lb_exchange_rate(from_currency_code, to_currency_code, date):
     if exchange_tax_currency == 'EUR':
         if from_currency_code == 'EUR' and to_currency_code == 'LTL':
             return Decimal('3.4528')
-        elif from_currency_code == 'LTL' and to_currency_code == 'EUR':
+        if from_currency_code == 'LTL' and to_currency_code == 'EUR':
             return Decimal('0.2896')
 
-    # API supports SOAP but there's no decent SOAP client library for Python at the moment
-    lb_currency_rates_api_endpoint = "https://www.lb.lt/webservices/FxRates/FxRates.asmx/getFxRates"
-    response = requests.get(lb_currency_rates_api_endpoint, params={
-        'tp': 'LT' if exchange_tax_currency == 'LTL' else 'EU',
-        'dt': date.isoformat(),
-    })
+    response_content = lb_exchange_rate_download(date)
 
-    response_xml = etree.fromstring(response.content)
-    namespaces = {'lb': response_xml.nsmap[None]}
-    if not response_xml.tag.endswith("FxRates"):
-        raise Exception("Invalid response, root element is not 'FxRates'")
-
-    rate = None
-    for currency_rates in response_xml.xpath('/lb:FxRates/lb:FxRate', namespaces=namespaces):
-        currencies = currency_rates.xpath('lb:CcyAmt', namespaces=namespaces)
-        if len(currencies) != 2:
-            raise Exception('Only two currencies per listing are expected')
-
-        first_currency = currencies[0].xpath('lb:Ccy', namespaces=namespaces)[0].text
-        first_amount = Decimal(currencies[0].xpath('lb:Amt', namespaces=namespaces)[0].text)
-        second_currency = currencies[1].xpath('lb:Ccy', namespaces=namespaces)[0].text
-        second_amount = Decimal(currencies[1].xpath('lb:Amt', namespaces=namespaces)[0].text)
-
-        if first_currency == from_currency_code and second_currency == to_currency_code:
-            rate = second_amount / first_amount
-        elif first_currency == to_currency_code and second_currency == from_currency_code:
-            rate = first_amount / second_amount
-
-        if rate:
-            break
-
-    if rate is None:
-        raise Exception("Currency rate between {} and {} was not found".format(from_currency_code,
-                                                                               to_currency_code))
-
-    return rate
+    return lb_exchange_rate_parse(from_currency_code, to_currency_code, response_content)

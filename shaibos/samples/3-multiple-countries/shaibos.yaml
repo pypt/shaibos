@@ -1,0 +1,106 @@
+#
+# Šiame YAML faile aprašytas pavyzdys, kuomet paslaugos teikiamos užsieniui.
+# Sąskaitos išrašomos USD, taip pat naudojamas mažų kaštų tarptautinių pervedimų metodas.
+#
+# Norėdami išmėginti šį pavyzdį, įvykdykite:
+#
+#     cd shaibos/samples/3-multiple-countries/
+#     ../../../bin/shaibos-invoice --format=html
+#     ../../../bin/shaibos-invoice --format=pdf
+#     ../../../bin/shaibos-totals --year 2015
+#     ../../../bin/shaibos-taxfiling --year 2015
+#
+
+---
+
+sellers:
+    - &pavardenis
+        name: "Vardenis Pavardenis"
+        vsd_tax_rate: 28.5
+        iea_certificate_number: 123456
+        iea_certificate_issue_date: 2011-01-03
+        personal_number: 38912010123
+        address: "Adreso st. 1-2, LT-12345 Vilnius"
+        phone: "+37061212345"
+        email: "pavardenis@example.com"
+        bank_credentials:
+            account: "LT627300010012345678"
+            swift: "HABALT22"
+            name: "Swedbank AB"
+            transferwise_account: "pavardenis@example.com"
+
+activities:
+    - &kompiuteriu_programavimo_veikla
+        title: "Kompiuterių programavimo veikla"
+        evrk_code: 620100
+        gpm_tax_rate: 15
+        invoice_number_prefix: "VVP"
+        invoice_number_length: 3
+
+buyers:
+    - &klientas_a
+        name: "A Inc."
+        address: "10200 Example st.<br/>San Francisco, CA 12345 USA"
+        currency: "USD"
+        languages:
+            - "en_US"
+            - "lt_LT"
+    - &klientas_b
+        name: "B Corporation"
+        address: "20300 Example st.<br/> Seattle, WA 12345 USA"
+        company_code: "1234567891"
+        currency: "USD"
+        languages:
+            - "en_US"
+            - "lt_LT"
+
+services:
+    - &software_development_a
+        # Dauguma sąskaitos dalių palaiko lokalizaciją, t.y. galite
+        # nurodyti sąskaitos parametro reikšmes įvairiomis kalbomis
+        description:
+            lt_LT: 'Programavimo darbai.'
+            en_US: 'Software development services.'
+        measure: hour
+        price: 100
+
+    - &software_development_b
+        description: 'Software development services.'
+        measure: hour
+        price: 40
+
+invoices:
+
+    - date: 2015-03-31
+      seller: *pavardenis
+      buyer: *klientas_a
+      activity: *kompiuteriu_programavimo_veikla
+      items:
+          - <<: *software_development_a
+            # Sąskaita išrašyta už 6 valandas
+            quantity: 6
+      payment:
+          paid: True
+          date: 2015-04-03
+
+    - date: 2015-04-29
+      seller: *pavardenis
+      buyer: *klientas_b
+      activity: *kompiuteriu_programavimo_veikla
+      items:
+          - <<: *software_development_b
+            quantity: 5
+      payment:
+          paid: True
+          date: 2015-05-02
+
+    - date: 2015-06-26
+      seller: *pavardenis
+      buyer: *klientas_b
+      activity: *kompiuteriu_programavimo_veikla
+      items:
+          - <<: *software_development_b
+            quantity: 10
+      payment:
+          paid: True
+          date: 2015-05-02

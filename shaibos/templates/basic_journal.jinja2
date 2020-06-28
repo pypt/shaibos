@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>
+        Gyventojo individualios veiklos pajamų - išlaidų žurnalas
+    </title>
+    <style type="text/css" media="all">
+
+        @page {
+            size: A4 portrait;
+            counter-increment: page;
+            margin: 0;
+
+            @bottom-right {
+                padding-right: 1em;
+                content: counter(page) " / " counter(pages);
+            }
+        }
+
+        html, body {
+            /* A4 */
+            width: 210mm;
+            height: 297mm;
+
+            font-size: 10pt;
+            margin: 0;
+            padding: 0;
+
+            font-family: "DejaVu Serif";
+        }
+
+        body {
+            padding: 2em;
+        }
+
+        p {
+            padding: 0;
+            margin: 0;
+        }
+
+        table {
+            border: 1px solid;
+            border-collapse: collapse;
+        }
+
+        td,
+        th {
+            border: 1px solid;
+            padding: 0.2em 0.4em;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: lightgray;
+
+            /* Print background color */
+            -webkit-print-color-adjust: exact;
+        }
+
+        #main-heading {
+            text-align: center;
+            margin: 1em 4em;
+            font-size: 2em;
+        }
+
+        .caption {
+            width: 100%;
+            border-bottom: 1px solid silver;
+            margin: 1em 0.5em 1em 0.5em;
+        }
+
+        .invoices td:nth-child(2) {
+            text-wrap: none;
+        }
+    </style>
+</head>
+
+<body>
+
+{# String translation helper #}
+{% macro i18n_string(string, language) -%}
+    {% if string[language] %}
+        {{ string[language] }}
+    {% else %}
+        {{ string }}
+    {% endif %}
+{%- endmacro %}
+
+<h1 id="main-heading">Gyventojo individualios veiklos pajamų - išlaidų apskaitos žurnalas</h1>
+
+<div class="caption">{{seller.name}} {{seller.personal_number}}</div>
+<div class="caption">{{seller.address}}</div>
+<div class="caption">{{activity.evrk_code}} {{activity.title}}</div>
+
+<table id="invoices">
+    <tr>
+        <th>Eilės nr.</th>
+        <th>Data</th>
+        <th>Dokumento data, pavadinimas ir numeris</th>
+        <th>Operacijos turinys</th>
+        <th>Pajamų suma (eurais)</th>
+        <th>Išlaidos ir<br/>(arba) leidžiami atskaitymai</th>
+    </tr>
+    {% for invoice in invoices %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ invoice.payment_date() }}</td>
+            <td>
+                {{ invoice.date }} sąskaita faktūra
+                Serija {{ invoice.activity.invoice_number_prefix }} Nr. {{ invoice.number }}
+            </td>
+            <td>Gaunamos pajamos už:
+            {% for item in invoice.items %}
+                {{ i18n_string(item.description, 'lt_LT') }}
+                {{ ", " if not loop.last }}
+            {% endfor %}
+            {% if debug_exchange_rates %}
+                <br/>
+                <br/>
+                (1 {{ invoice.tax_currency }} = {{ round_to_decimal_places(Decimal("1.0") / invoice.tax_currency_exchange_rate_payment, 5) }} {{ invoice.currency }})
+            {% endif %}
+            </td>
+            <td>{{ invoice.total_taxed_income }}</td>
+            <td></td>
+        </tr>
+    {% endfor %}
+    {% if print_totals %}
+        <tr>
+            <td colspan="6"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>Viso:</td>
+            <td>{{ total_taxed_income }}</td>
+            <td>0</td>
+        </tr>
+    {% endif %}
+</table>
+</body>
+</html>

@@ -5,7 +5,7 @@ from decimal import Decimal
 percent_multiplier = Decimal('0.01')
 
 
-class TaxRates(object):
+class TaxRates:
     def __init__(self, expenses_rate, sodra_tax_base, vsd_rate, psd_rate, gpm_rate):
         self.expenses_rate = expenses_rate
         self.sodra_tax_base = sodra_tax_base
