@@ -441,6 +441,7 @@
                             <strong>{{ i18n_string(buyer.name, language) }}</strong>
                     </td>
                 </tr>
+                {% if buyer.address %}
                 <tr>
                     <td>
                         <strong class="seller-right">{{ i18n_string(buyer.address, language) }}</strong>
@@ -450,6 +451,7 @@
                         {% endcall %}
                     </td>
                 </tr>
+                {% endif %}
                 {% if buyer.personal_number %}
                     <tr>
                         <td>

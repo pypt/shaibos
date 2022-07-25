@@ -128,7 +128,7 @@ class Buyer(Iterable):
             dictionary.get('correspondent_bank', None))
         return cls(
             name=dictionary['name'],
-            address=dictionary['address'],
+            address=dictionary.get('address', None),
             languages=dictionary['languages'],
             personal_number=dictionary.get('personal_number', None),
             company_code=dictionary.get('company_code', None),
